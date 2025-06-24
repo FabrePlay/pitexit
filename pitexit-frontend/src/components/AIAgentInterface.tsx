@@ -330,13 +330,13 @@ export default function AIAgentInterface() {
   };
 
   return (
-    <div className="min-h-screen bg-deep-dark flex">
+    <div className="h-screen bg-deep-dark flex overflow-hidden">
       {/* Chat Section */}
       <div className={`transition-all duration-500 ease-in-out ${
         showResult && !isResultMaximized ? 'w-1/2' : 'w-full'
-      } flex flex-col`}>
+      } flex flex-col h-full`}>
         {/* Chat Header */}
-        <div className="bg-dark-surface p-6 border-b border-gray-800">
+        <div className="bg-dark-surface p-6 border-b border-gray-800 flex-shrink-0">
           <div className="flex items-center justify-center">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-neon-blue to-blue-500 flex items-center justify-center">
@@ -428,7 +428,7 @@ export default function AIAgentInterface() {
         </div>
 
         {/* Chat Input */}
-        <div className="bg-dark-surface p-6 border-t border-gray-800">
+        <div className="bg-dark-surface p-6 border-t border-gray-800 flex-shrink-0">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center space-x-4">
               <div className="flex-1 relative">
@@ -485,10 +485,10 @@ export default function AIAgentInterface() {
             transition={{ duration: 0.5, ease: 'easeInOut' }}
             className={`${
               isResultMaximized ? 'fixed inset-0 z-50' : 'w-1/2'
-            } bg-dark-surface border-l border-gray-800 flex flex-col`}
+            } bg-dark-surface border-l border-gray-800 flex flex-col h-full`}
           >
             {/* Result Header */}
-            <div className="p-6 border-b border-gray-800 flex items-center justify-between">
+            <div className="p-6 border-b border-gray-800 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-lg bg-neon-blue/10 flex items-center justify-center">
                   {getResultIcon(currentResult.type)}
@@ -576,7 +576,7 @@ export default function AIAgentInterface() {
             </div>
 
             {/* Result Actions */}
-            <div className="p-6 border-t border-gray-800">
+            <div className="p-6 border-t border-gray-800 flex-shrink-0">
               <div className="flex space-x-3">
                 <button className="flex-1 neon-button flex items-center justify-center space-x-2">
                   <Download className="w-4 h-4" />
