@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-deep-dark text-white;
+  }
+}
+
+@layer components {
+  .neon-glow {
+    text-shadow: 0 0 10px #00f2fe, 0 0 20px #00f2fe, 0 0 30px #00f2fe;
+  }
+  
+  .neon-button {
+    @apply px-8 py-3 rounded-lg bg-transparent border-2 border-neon-blue text-neon-blue font-semibold 
+           transition-all duration-300 hover:bg-neon-blue hover:text-deep-dark hover:shadow-[0_0_20px_rgba(0,242,254,0.5)];
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-blue-500 animate-gradient-x;
+  }
+
+  .feature-card {
+    @apply p-6 rounded-xl bg-dark-card border border-gray-800 
+           transition-all duration-300 hover:border-neon-blue hover:shadow-[0_0_30px_rgba(0,242,254,0.2)];
+  }
+}
