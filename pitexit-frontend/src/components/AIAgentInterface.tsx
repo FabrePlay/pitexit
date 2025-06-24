@@ -91,8 +91,8 @@ const AGENT_RESPONSES = {
     text: "He creado tu Business Model Canvas completo basado en la información que me proporcionaste.",
     result: {
       type: 'strategy' as const,
-      title: 'Business Model Canvas - Traxerit',
-      content: `# Business Model Canvas - Traxerit
+      title: 'Business Model Canvas - Pit Exit',
+      content: `# Business Model Canvas - Pit Exit
 
 ## 🤝 Socios Clave
 - Proveedores de IA (OpenAI, Google)
@@ -160,7 +160,7 @@ const AGENT_RESPONSES = {
     result: {
       type: 'content' as const,
       title: 'Estrategia de Contenido - Redes Sociales',
-      content: `# Estrategia de Contenido para Traxerit
+      content: `# Estrategia de Contenido para Pit Exit
 
 ## 📱 Instagram Posts
 
@@ -168,23 +168,23 @@ const AGENT_RESPONSES = {
 **Caption:**
 "🚀 ¿Sabías que el 90% de los emprendedores no sabe cómo encontrar fondos para su startup?
 
-Con Traxerit, nuestra IA analiza tu perfil y te conecta automáticamente con los fondos que mejor se ajustan a tu proyecto.
+Con Pit Exit, nuestra IA analiza tu perfil y te conecta automáticamente con los fondos que mejor se ajustan a tu proyecto.
 
 ✨ Resultados en minutos, no en meses
 🎯 Fondos personalizados para tu industria
 📊 Análisis de probabilidad de éxito
 
-#Emprendimiento #Startups #Fondos #IA #Traxerit"
+#Emprendimiento #Startups #Fondos #IA #PitExit"
 
 **Hashtags:** #emprendimiento #startups #fondos #inteligenciaartificial #financiamiento
 
 ### Post 2: Testimonial
 **Caption:**
-"💬 'Gracias a Traxerit conseguí financiamiento de $50M en solo 3 semanas. Su IA me ayudó a encontrar el fondo perfecto y a preparar toda la documentación.' - María González, CEO de EcoTech
+"💬 'Gracias a Pit Exit conseguí financiamiento de $50M en solo 3 semanas. Su IA me ayudó a encontrar el fondo perfecto y a preparar toda la documentación.' - María González, CEO de EcoTech
 
 ¿Listo para transformar tu idea en realidad?
 
-#TestimonioReal #ExitoEmprendedor #Traxerit"
+#TestimonioReal #ExitoEmprendedor #PitExit"
 
 ## 🐦 Twitter Threads
 
@@ -343,7 +343,7 @@ export default function AIAgentInterface() {
                 <Bot className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold gradient-text">Agente IA Traxerit</h1>
+                <h1 className="text-xl font-bold gradient-text">Agente IA Pit Exit</h1>
                 <p className="text-sm text-gray-400">Especialista en Emprendimiento</p>
               </div>
             </div>

@@ -432,7 +432,7 @@ function App() {
                   Tu Negocio con IA
                 </h1>
                 <p className="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto">
-                  Traxerit te ayuda a encontrar fondos, estructurar tu negocio y generar contenido
+                  Pit Exit te ayuda a encontrar fondos, estructurar tu negocio y generar contenido
                   con inteligencia artificial.
                 </p>
                 <div className="space-x-4">
@@ -641,7 +641,7 @@ function App() {
               
               <div className="grid md:grid-cols-3 gap-8">
                 <BlogCard
-                  title="Cómo un emprendedor consiguió financiamiento con Traxerit"
+                  title="Cómo un emprendedor consiguió financiamiento con Pit Exit"
                   description="Descubre cómo Juan transformó su startup utilizando nuestra plataforma para obtener fondos públicos."
                   category="Caso de Éxito"
                   icon={<Trophy />}
@@ -684,7 +684,7 @@ function ChatInterface({ onClose, selectedBusiness, onBusinessChange, currentUse
   }>>([
     {
       id: 1,
-      text: "¡Hola! Soy Traxerit, tu asistente de IA. ¿En qué puedo ayudarte hoy?",
+      text: "¡Hola! Soy Pit Exit, tu asistente de IA. ¿En qué puedo ayudarte hoy?",
       sender: 'bot'
     }
   ]);
@@ -862,7 +862,7 @@ function ChatInterface({ onClose, selectedBusiness, onBusinessChange, currentUse
             <ArrowLeft />
           </button>
           <div>
-            <h2 className="font-semibold">Chat con Traxerit</h2>
+            <h2 className="font-semibold">Chat con Pit Exit</h2>
             <p className="text-sm text-gray-400">
               {currentUser?.username} - Plan {currentUser?.plan}
             </p>
