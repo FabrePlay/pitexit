@@ -711,6 +711,12 @@ function App() {
     }
   };
 
+  const handleNavigateToPlayground = (businessName: string) => {
+    setSelectedBusiness(businessName);
+    setShowProfile(false);
+    setShowPlayground(true);
+  };
+
   // Mostrar Playground
   if (showPlayground && currentUser) {
     return (
@@ -731,6 +737,7 @@ function App() {
         onClose={() => setShowProfile(false)}
         onUpdateUser={(updatedUser) => setCurrentUser(updatedUser)}
         businessProfiles={BUSINESS_PROFILES}
+        onNavigateToPlayground={handleNavigateToPlayground}
       />
     );
   }
@@ -853,7 +860,7 @@ function App() {
               { step: "1", title: "Describe tu Negocio", icon: <MessageSquare /> },
               { step: "2", title: "Descubre Fondos", icon: <Zap /> },
               { step: "3", title: "Estructura tu Modelo", icon: <Bot /> },
-              { step: "4", title: "Genera Contenido", icon: <Rocket /> }
+              { step: "4", title: "Genera Contenido", icon:  <Rocket /> }
             ].map((item, index) => (
               <div key={index} className="feature-card text-center">
                 <div className="w-12 h-12 rounded-full bg-neon-blue/10 flex items-center justify-center mx-auto mb-4">
