@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Bot, Rocket, MessageSquare, Zap, ChevronRight, Check, Users, Sparkles, Crown, BookOpen, Trophy, Lightbulb, Send, Building, ArrowLeft, Mail, Lock, Eye, EyeOff, User, Plus } from 'lucide-react';
 import AIAgentInterface from './components/AIAgentInterface';
+import UserProfile from './components/UserProfile';
 
 // Límites de negocios por plan
 const BUSINESS_LIMITS = {
@@ -380,6 +381,7 @@ function App() {
   const [showChat, setShowChat] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [showAIAgent, setShowAIAgent] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<(typeof MOCK_USERS.free & { businesses: string[] }) | null>(null);
 
@@ -395,8 +397,26 @@ function App() {
     setShowAIAgent(true);
   };
 
+  const handleProfileClick = () => {
+    if (currentUser) {
+      setShowProfile(true);
+    } else {
+      setShowAuth(true);
+    }
+  };
+
   if (showAIAgent) {
     return <AIAgentInterface />;
+  }
+
+  if (showProfile && currentUser) {
+    return (
+      <UserProfile 
+        user={currentUser}
+        onClose={() => setShowProfile(false)}
+        onUpdateUser={(updatedUser) => setCurrentUser(updatedUser)}
+      />
+    );
   }
 
   return (
@@ -417,6 +437,23 @@ function App() {
         />
       ) : (
         <>
+          {/* Navigation Bar */}
+          {currentUser && (
+            <nav className="fixed top-0 right-0 z-40 p-4">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={handleProfileClick}
+                  className="flex items-center space-x-2 bg-dark-surface/80 backdrop-blur-sm border border-gray-800 rounded-lg px-4 py-2 hover:border-neon-blue transition-colors"
+                >
+                  <div className="w-6 h-6 rounded-full bg-neon-blue/10 flex items-center justify-center">
+                    <User className="w-4 h-4 text-neon-blue" />
+                  </div>
+                  <span className="text-sm text-white">{currentUser.username}</span>
+                </button>
+              </div>
+            </nav>
+          )}
+
           {/* Hero Section */}
           <header className="relative min-h-screen flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,242,254,0.1)_0%,transparent_70%)]" />
@@ -451,7 +488,7 @@ function App() {
                   {currentUser && (
                     <div className="inline-flex items-center gap-4 mt-4">
                       <span className="text-neon-blue">
-                        {currentUser.username} - Plan {currentUser.plan}
+                        Plan {currentUser.plan}
                       </span>
                       <button 
                         className="text-gray-400 hover:text-white transition-colors"
