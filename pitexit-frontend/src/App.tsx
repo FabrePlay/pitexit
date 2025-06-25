@@ -691,18 +691,13 @@ function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: an
 function App() {
   const [showAuth, setShowAuth] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showPlayground, setShowPlayground] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<any | null>(null);
 
-  const handleChatClick = () => {
+  const handlePlaygroundClick = () => {
     if (currentUser) {
-      // Usar la misma interfaz de AIAgentInterface para todos
-      return <AIAgentInterface 
-        currentUser={currentUser}
-        selectedBusiness={selectedBusiness}
-        onBusinessChange={setSelectedBusiness}
-        onClose={() => window.location.reload()}
-      />;
+      setShowPlayground(true);
     } else {
       setShowAuth(true);
     }
@@ -716,22 +711,19 @@ function App() {
     }
   };
 
-  // Si hay usuario y se hace clic en chat, mostrar AIAgentInterface
-  if (currentUser && showAuth === false && showProfile === false) {
-    const shouldShowChat = new URLSearchParams(window.location.search).get('chat') === 'true';
-    if (shouldShowChat) {
-      return <AIAgentInterface 
+  // Mostrar Playground
+  if (showPlayground && currentUser) {
+    return (
+      <AIAgentInterface 
         currentUser={currentUser}
         selectedBusiness={selectedBusiness}
         onBusinessChange={setSelectedBusiness}
-        onClose={() => {
-          window.history.replaceState({}, '', window.location.pathname);
-          window.location.reload();
-        }}
-      />;
-    }
+        onClose={() => setShowPlayground(false)}
+      />
+    );
   }
 
+  // Mostrar Perfil
   if (showProfile && currentUser) {
     return (
       <UserProfile 
@@ -790,25 +782,21 @@ function App() {
             <div className="space-x-4">
               <button 
                 className="neon-button"
-                onClick={() => {
-                  if (currentUser) {
-                    window.location.search = '?chat=true';
-                  } else {
-                    setShowAuth(true);
-                  }
-                }}
+                onClick={handlePlaygroundClick}
               >
-                {currentUser ? 'Abrir Chat IA' : 'Probar Agente IA'} <Bot className="inline ml-2 w-5 h-5" />
+                {currentUser ? 'Abrir Playground' : 'Probar Playground'} <Bot className="inline ml-2 w-5 h-5" />
               </button>
               <button 
                 className="border border-gray-700 hover:border-neon-blue px-8 py-3 rounded-lg transition-all duration-300"
                 onClick={() => {
                   if (!currentUser) {
                     setShowAuth(true);
+                  } else {
+                    handleProfileClick();
                   }
                 }}
               >
-                {currentUser ? 'Bienvenido' : 'Iniciar Sesión'} <ChevronRight className="inline ml-2" />
+                {currentUser ? 'Mi Perfil' : 'Iniciar Sesión'} <ChevronRight className="inline ml-2" />
               </button>
               {currentUser && (
                 <div className="inline-flex items-center gap-4 mt-4">
