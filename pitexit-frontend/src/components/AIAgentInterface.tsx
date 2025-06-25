@@ -25,9 +25,11 @@ import {
   TrendingUp,
   Calendar,
   Users,
-  DollarSign
+  DollarSign,
+  Bell
 } from 'lucide-react';
 import BusinessDashboard from './BusinessDashboard';
+import NotificationCenter from './NotificationCenter';
 
 interface Message {
   id: number;
@@ -93,8 +95,408 @@ interface AIAgentInterfaceProps {
 // Simulación de conversaciones por negocio
 const BUSINESS_CONVERSATIONS: { [key: string]: Message[] } = {};
 
-// Simulación de planes de trabajo por negocio
-const BUSINESS_WORKPLANS: { [key: string]: WorkPlan[] } = {};
+// Simulación de planes de trabajo por negocio con datos de prueba
+const BUSINESS_WORKPLANS: { [key: string]: WorkPlan[] } = {
+  // Planes para Café Artesanal
+  'basic@example.com-Café Artesanal': [
+    {
+      id: 'wp-cafe-001',
+      businessName: 'Café Artesanal',
+      title: 'Plan de Expansión y Crecimiento',
+      description: 'Estrategia integral para expandir el negocio a 3 sucursales y lanzar productos retail',
+      estimatedDuration: '16 semanas',
+      priority: 'high',
+      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Hace 7 días
+      phases: [
+        {
+          id: 'phase-cafe-1',
+          title: 'Investigación y Validación de Mercado',
+          description: 'Análisis profundo del mercado y validación de nuevas ubicaciones',
+          status: 'completed',
+          estimatedDays: 21,
+          tasks: [
+            {
+              id: 'task-cafe-1-1',
+              title: 'Estudio de mercado para nuevas ubicaciones',
+              description: 'Analizar zonas potenciales para las nuevas sucursales',
+              status: 'completed',
+              priority: 'high',
+              estimatedHours: 24,
+              dueDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-1-2',
+              title: 'Análisis de competencia local',
+              description: 'Evaluar competidores en las zonas seleccionadas',
+              status: 'completed',
+              priority: 'medium',
+              estimatedHours: 16,
+              dueDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-1-3',
+              title: 'Encuestas a clientes potenciales',
+              description: 'Realizar encuestas para validar demanda en nuevas ubicaciones',
+              status: 'completed',
+              priority: 'high',
+              estimatedHours: 20,
+              dueDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        },
+        {
+          id: 'phase-cafe-2',
+          title: 'Búsqueda de Financiamiento',
+          description: 'Obtener capital necesario para la expansión',
+          status: 'in-progress',
+          estimatedDays: 28,
+          tasks: [
+            {
+              id: 'task-cafe-2-1',
+              title: 'Preparar plan de negocios detallado',
+              description: 'Crear plan de negocios completo para presentar a inversionistas',
+              status: 'completed',
+              priority: 'high',
+              estimatedHours: 32,
+              dueDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-2-2',
+              title: 'Postular a fondo CORFO',
+              description: 'Completar postulación a fondo CORFO para emprendimiento',
+              status: 'in-progress',
+              priority: 'high',
+              estimatedHours: 16,
+              dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-2-3',
+              title: 'Contactar inversionistas ángeles',
+              description: 'Presentar proyecto a red de inversionistas ángeles',
+              status: 'pending',
+              priority: 'medium',
+              estimatedHours: 20,
+              dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        },
+        {
+          id: 'phase-cafe-3',
+          title: 'Desarrollo de Productos Retail',
+          description: 'Crear línea de productos para venta en retail',
+          status: 'pending',
+          estimatedDays: 35,
+          tasks: [
+            {
+              id: 'task-cafe-3-1',
+              title: 'Diseño de packaging',
+              description: 'Crear diseño atractivo para productos retail',
+              status: 'pending',
+              priority: 'medium',
+              estimatedHours: 24,
+              dueDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-3-2',
+              title: 'Certificaciones de calidad',
+              description: 'Obtener certificaciones necesarias para retail',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 40,
+              dueDate: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-3-3',
+              title: 'Negociación con retailers',
+              description: 'Establecer acuerdos con cadenas de retail',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 28,
+              dueDate: new Date(Date.now() + 42 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        },
+        {
+          id: 'phase-cafe-4',
+          title: 'Apertura de Nuevas Sucursales',
+          description: 'Implementación y apertura de las nuevas ubicaciones',
+          status: 'pending',
+          estimatedDays: 42,
+          tasks: [
+            {
+              id: 'task-cafe-4-1',
+              title: 'Adecuación de locales',
+              description: 'Remodelación y equipamiento de nuevos locales',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 80,
+              dueDate: new Date(Date.now() + 56 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-4-2',
+              title: 'Contratación y capacitación de personal',
+              description: 'Reclutar y entrenar personal para nuevas sucursales',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 60,
+              dueDate: new Date(Date.now() + 70 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-4-3',
+              title: 'Campaña de lanzamiento',
+              description: 'Ejecutar campaña de marketing para apertura',
+              status: 'pending',
+              priority: 'medium',
+              estimatedHours: 32,
+              dueDate: new Date(Date.now() + 84 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'wp-cafe-002',
+      businessName: 'Café Artesanal',
+      title: 'Estrategia de Marketing Digital',
+      description: 'Plan integral para fortalecer presencia digital y aumentar ventas online',
+      estimatedDuration: '8 semanas',
+      priority: 'medium',
+      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // Hace 3 días
+      phases: [
+        {
+          id: 'phase-cafe-marketing-1',
+          title: 'Optimización de Redes Sociales',
+          description: 'Mejorar presencia en Instagram, Facebook y TikTok',
+          status: 'in-progress',
+          estimatedDays: 14,
+          tasks: [
+            {
+              id: 'task-cafe-m-1-1',
+              title: 'Audit de redes sociales actuales',
+              description: 'Evaluar performance actual en todas las plataformas',
+              status: 'completed',
+              priority: 'high',
+              estimatedHours: 8,
+              dueDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-m-1-2',
+              title: 'Crear calendario de contenido',
+              description: 'Planificar contenido para 3 meses',
+              status: 'in-progress',
+              priority: 'high',
+              estimatedHours: 16,
+              dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-m-1-3',
+              title: 'Implementar estrategia de hashtags',
+              description: 'Optimizar uso de hashtags para mayor alcance',
+              status: 'pending',
+              priority: 'medium',
+              estimatedHours: 6,
+              dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        },
+        {
+          id: 'phase-cafe-marketing-2',
+          title: 'E-commerce y Ventas Online',
+          description: 'Desarrollar canal de ventas online',
+          status: 'pending',
+          estimatedDays: 21,
+          tasks: [
+            {
+              id: 'task-cafe-m-2-1',
+              title: 'Configurar tienda online',
+              description: 'Implementar sistema de e-commerce',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 32,
+              dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-cafe-m-2-2',
+              title: 'Integrar sistema de pagos',
+              description: 'Configurar pasarelas de pago seguras',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 16,
+              dueDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  // Planes para TechStart
+  'pro@example.com-TechStart': [
+    {
+      id: 'wp-tech-001',
+      businessName: 'TechStart',
+      title: 'Desarrollo de MVP y Lanzamiento',
+      description: 'Plan completo para desarrollar MVP, conseguir primeros usuarios y ronda de inversión',
+      estimatedDuration: '20 semanas',
+      priority: 'high',
+      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // Hace 5 días
+      phases: [
+        {
+          id: 'phase-tech-1',
+          title: 'Desarrollo del MVP',
+          description: 'Crear versión mínima viable de la plataforma',
+          status: 'in-progress',
+          estimatedDays: 42,
+          tasks: [
+            {
+              id: 'task-tech-1-1',
+              title: 'Arquitectura del sistema',
+              description: 'Diseñar arquitectura técnica de la plataforma',
+              status: 'completed',
+              priority: 'high',
+              estimatedHours: 40,
+              dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-tech-1-2',
+              title: 'Desarrollo del backend',
+              description: 'Implementar API y lógica de negocio',
+              status: 'in-progress',
+              priority: 'high',
+              estimatedHours: 120,
+              dueDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-tech-1-3',
+              title: 'Desarrollo del frontend',
+              description: 'Crear interfaz de usuario intuitiva',
+              status: 'in-progress',
+              priority: 'high',
+              estimatedHours: 100,
+              dueDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-tech-1-4',
+              title: 'Integración de IA',
+              description: 'Implementar algoritmos de IA para predicciones',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 80,
+              dueDate: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        },
+        {
+          id: 'phase-tech-2',
+          title: 'Testing y Validación',
+          description: 'Pruebas exhaustivas y validación con usuarios beta',
+          status: 'pending',
+          estimatedDays: 21,
+          tasks: [
+            {
+              id: 'task-tech-2-1',
+              title: 'Testing automatizado',
+              description: 'Implementar suite de tests automatizados',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 32,
+              dueDate: new Date(Date.now() + 42 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-tech-2-2',
+              title: 'Programa beta',
+              description: 'Reclutar y gestionar usuarios beta',
+              status: 'pending',
+              priority: 'medium',
+              estimatedHours: 24,
+              dueDate: new Date(Date.now() + 49 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-tech-2-3',
+              title: 'Optimización basada en feedback',
+              description: 'Mejorar producto según feedback de usuarios beta',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 40,
+              dueDate: new Date(Date.now() + 56 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        },
+        {
+          id: 'phase-tech-3',
+          title: 'Estrategia de Go-to-Market',
+          description: 'Preparar lanzamiento y estrategia de adquisición',
+          status: 'pending',
+          estimatedDays: 28,
+          tasks: [
+            {
+              id: 'task-tech-3-1',
+              title: 'Estrategia de pricing',
+              description: 'Definir modelo de precios y planes',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 16,
+              dueDate: new Date(Date.now() + 63 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-tech-3-2',
+              title: 'Campaña de lanzamiento',
+              description: 'Ejecutar campaña de marketing para lanzamiento',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 32,
+              dueDate: new Date(Date.now() + 77 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-tech-3-3',
+              title: 'Partnerships estratégicos',
+              description: 'Establecer alianzas con empresas complementarias',
+              status: 'pending',
+              priority: 'medium',
+              estimatedHours: 24,
+              dueDate: new Date(Date.now() + 84 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        },
+        {
+          id: 'phase-tech-4',
+          title: 'Ronda de Inversión Serie A',
+          description: 'Preparar y ejecutar ronda de inversión',
+          status: 'pending',
+          estimatedDays: 35,
+          tasks: [
+            {
+              id: 'task-tech-4-1',
+              title: 'Preparar pitch deck',
+              description: 'Crear presentación profesional para inversionistas',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 24,
+              dueDate: new Date(Date.now() + 91 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-tech-4-2',
+              title: 'Due diligence preparation',
+              description: 'Preparar documentación para due diligence',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 32,
+              dueDate: new Date(Date.now() + 105 * 24 * 60 * 60 * 1000)
+            },
+            {
+              id: 'task-tech-4-3',
+              title: 'Roadshow con inversionistas',
+              description: 'Presentar a fondos de inversión y VCs',
+              status: 'pending',
+              priority: 'high',
+              estimatedHours: 40,
+              dueDate: new Date(Date.now() + 126 * 24 * 60 * 60 * 1000)
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
 
 const AGENT_RESPONSES = {
   'fondo': {
@@ -583,6 +985,7 @@ export default function AIAgentInterface({
   const [isResultMaximized, setIsResultMaximized] = useState(false);
   const [copiedText, setCopiedText] = useState(false);
   const [showCreateBusiness, setShowCreateBusiness] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -757,8 +1160,37 @@ export default function AIAgentInterface({
     return BUSINESS_WORKPLANS[workPlanKey] || [];
   };
 
+  // Contar notificaciones pendientes
+  const getNotificationCount = (): number => {
+    if (!selectedBusiness || !currentUser) return 0;
+    const workPlans = getBusinessWorkPlans();
+    let count = 0;
+    
+    workPlans.forEach(plan => {
+      plan.phases.forEach(phase => {
+        phase.tasks.forEach(task => {
+          if (task.dueDate && task.status !== 'completed') {
+            const daysUntilDue = Math.ceil((task.dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+            if (daysUntilDue <= 3) count++; // Tareas que vencen en 3 días o menos
+          }
+        });
+      });
+    });
+    
+    return count;
+  };
+
   return (
     <div className="h-screen bg-deep-dark flex overflow-hidden">
+      {/* Notification Center */}
+      {showNotifications && (
+        <NotificationCenter
+          businessName={selectedBusiness}
+          workPlans={getBusinessWorkPlans()}
+          onClose={() => setShowNotifications(false)}
+        />
+      )}
+
       {/* Create Business Modal */}
       {showCreateBusiness && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -878,15 +1310,32 @@ export default function AIAgentInterface({
               </div>
             </div>
             
-            {/* Business Selector */}
-            {currentUser && (
-              <BusinessSelector
-                currentUser={currentUser}
-                selectedBusiness={selectedBusiness || null}
-                onBusinessChange={onBusinessChange || (() => {})}
-                onCreateBusiness={() => setShowCreateBusiness(true)}
-              />
-            )}
+            <div className="flex items-center space-x-4">
+              {/* Notification Bell */}
+              {selectedBusiness && (
+                <button
+                  onClick={() => setShowNotifications(true)}
+                  className="relative p-2 text-gray-400 hover:text-white transition-colors"
+                >
+                  <Bell className="w-5 h-5" />
+                  {getNotificationCount() > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                      {getNotificationCount()}
+                    </span>
+                  )}
+                </button>
+              )}
+
+              {/* Business Selector */}
+              {currentUser && (
+                <BusinessSelector
+                  currentUser={currentUser}
+                  selectedBusiness={selectedBusiness || null}
+                  onBusinessChange={onBusinessChange || (() => {})}
+                  onCreateBusiness={() => setShowCreateBusiness(true)}
+                />
+              )}
+            </div>
           </div>
 
           {/* Navigation Tabs */}
