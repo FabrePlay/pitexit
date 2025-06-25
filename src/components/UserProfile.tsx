@@ -117,12 +117,13 @@ const PLAN_FEATURES = {
   }
 };
 
-function BusinessProfileModal({ business, businessData, onClose, onSave }: {
+function BusinessProfileModal({ business, businessData, onClose, onUpdate }: {
   business: string;
   businessData: any;
   onClose: () => void;
-  onSave: (data: any) => void;
+  onUpdate: (updatedData: any) => void;
 }) {
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(businessData || {
     name: business,
     description: '',
@@ -132,7 +133,7 @@ function BusinessProfileModal({ business, businessData, onClose, onSave }: {
     employees: 1,
     location: '',
     website: '',
-    revenue: '',
+    revenue: '$0',
     targetMarket: '',
     businessModel: '',
     keyProducts: [],
@@ -142,10 +143,9 @@ function BusinessProfileModal({ business, businessData, onClose, onSave }: {
     goals: []
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave(formData);
-    onClose();
+  const handleSave = () => {
+    onUpdate(formData);
+    setIsEditing(false);
   };
 
   return (
@@ -158,268 +158,392 @@ function BusinessProfileModal({ business, businessData, onClose, onSave }: {
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold gradient-text">Perfil del Negocio</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          <div className="flex items-center space-x-2">
+            {!isEditing ? (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="neon-button inline-flex items-center text-sm py-2"
+              >
+                <Edit3 className="w-4 h-4 mr-2" />
+                Editar
+              </button>
+            ) : (
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleSave}
+                  className="neon-button inline-flex items-center text-sm py-2"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Guardar
+                </button>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="border border-gray-700 hover:border-red-500 px-3 py-2 rounded-lg transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid md:grid-cols-2 gap-6">
           {/* Información Básica */}
           <div className="feature-card">
-            <h3 className="text-lg font-semibold mb-4">Información Básica</h3>
-            <div className="grid md:grid-cols-2 gap-4">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <Building className="w-5 h-5 mr-2 text-neon-blue" />
+              Información Básica
+            </h3>
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Nombre del Negocio
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                  />
+                ) : (
+                  <p className="text-white">{formData.name}</p>
+                )}
               </div>
+              
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Industria
-                </label>
-                <select
-                  value={formData.industry}
-                  onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                >
-                  <option value="">Seleccionar industria</option>
-                  <option value="Tecnología">Tecnología</option>
-                  <option value="Alimentación y Bebidas">Alimentación y Bebidas</option>
-                  <option value="Retail">Retail</option>
-                  <option value="Servicios">Servicios</option>
-                  <option value="Salud">Salud</option>
-                  <option value="Educación">Educación</option>
-                  <option value="Fintech">Fintech</option>
-                  <option value="Marketing">Marketing</option>
-                  <option value="Otro">Otro</option>
-                </select>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Descripción</label>
+                {isEditing ? (
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    rows={3}
+                  />
+                ) : (
+                  <p className="text-white">{formData.description || 'No especificada'}</p>
+                )}
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Etapa del Negocio
-                </label>
-                <select
-                  value={formData.stage}
-                  onChange={(e) => setFormData({ ...formData, stage: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                >
-                  <option value="Idea">Idea</option>
-                  <option value="MVP">MVP</option>
-                  <option value="Operando">Operando</option>
-                  <option value="Crecimiento">Crecimiento</option>
-                  <option value="Escalando">Escalando</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Fecha de Fundación
-                </label>
-                <input
-                  type="date"
-                  value={formData.foundedDate}
-                  onChange={(e) => setFormData({ ...formData, foundedDate: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Número de Empleados
-                </label>
-                <input
-                  type="number"
-                  value={formData.employees}
-                  onChange={(e) => setFormData({ ...formData, employees: parseInt(e.target.value) })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  min="1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Ubicación
-                </label>
-                <input
-                  type="text"
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  placeholder="Ciudad, País"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Sitio Web
-                </label>
-                <input
-                  type="url"
-                  value={formData.website}
-                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  placeholder="https://www.ejemplo.com"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Ingresos Anuales
-                </label>
-                <input
-                  type="text"
-                  value={formData.revenue}
-                  onChange={(e) => setFormData({ ...formData, revenue: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  placeholder="$0 - $1.000.000"
-                />
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Industria</label>
+                  {isEditing ? (
+                    <select
+                      value={formData.industry}
+                      onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                      className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    >
+                      <option value="">Seleccionar</option>
+                      <option value="Tecnología">Tecnología</option>
+                      <option value="Alimentación">Alimentación</option>
+                      <option value="Retail">Retail</option>
+                      <option value="Servicios">Servicios</option>
+                      <option value="Salud">Salud</option>
+                      <option value="Educación">Educación</option>
+                      <option value="Fintech">Fintech</option>
+                      <option value="Marketing">Marketing</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  ) : (
+                    <p className="text-white">{formData.industry || 'No especificada'}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Etapa</label>
+                  {isEditing ? (
+                    <select
+                      value={formData.stage}
+                      onChange={(e) => setFormData({ ...formData, stage: e.target.value })}
+                      className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    >
+                      <option value="Idea">Idea</option>
+                      <option value="MVP">MVP</option>
+                      <option value="Operando">Operando</option>
+                      <option value="Crecimiento">Crecimiento</option>
+                      <option value="Escalando">Escalando</option>
+                    </select>
+                  ) : (
+                    <p className="text-white">{formData.stage}</p>
+                  )}
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Descripción del Negocio
-              </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                rows={3}
-                placeholder="Describe tu negocio, qué hace y cómo genera valor..."
-              />
+          {/* Detalles Operacionales */}
+          <div className="feature-card">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <BarChart3 className="w-5 h-5 mr-2 text-neon-blue" />
+              Detalles Operacionales
+            </h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Fundado</label>
+                  {isEditing ? (
+                    <input
+                      type="date"
+                      value={formData.foundedDate}
+                      onChange={(e) => setFormData({ ...formData, foundedDate: e.target.value })}
+                      className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    />
+                  ) : (
+                    <p className="text-white">{formData.foundedDate || 'No especificado'}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Empleados</label>
+                  {isEditing ? (
+                    <input
+                      type="number"
+                      value={formData.employees}
+                      onChange={(e) => setFormData({ ...formData, employees: parseInt(e.target.value) })}
+                      className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    />
+                  ) : (
+                    <p className="text-white">{formData.employees}</p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Ubicación</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    placeholder="Ciudad, País"
+                  />
+                ) : (
+                  <p className="text-white">{formData.location || 'No especificada'}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Sitio Web</label>
+                {isEditing ? (
+                  <input
+                    type="url"
+                    value={formData.website}
+                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    placeholder="https://..."
+                  />
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <p className="text-white">{formData.website || 'No especificado'}</p>
+                    {formData.website && (
+                      <a href={formData.website} target="_blank" rel="noopener noreferrer" className="text-neon-blue hover:text-white">
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Ingresos Anuales</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={formData.revenue}
+                    onChange={(e) => setFormData({ ...formData, revenue: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    placeholder="$0"
+                  />
+                ) : (
+                  <p className="text-white">{formData.revenue}</p>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Modelo de Negocio */}
           <div className="feature-card">
-            <h3 className="text-lg font-semibold mb-4">Modelo de Negocio</h3>
-            <div className="grid md:grid-cols-2 gap-4">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <Target className="w-5 h-5 mr-2 text-neon-blue" />
+              Modelo de Negocio
+            </h3>
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Mercado Objetivo
-                </label>
-                <textarea
-                  value={formData.targetMarket}
-                  onChange={(e) => setFormData({ ...formData, targetMarket: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  rows={2}
-                  placeholder="Describe tu mercado objetivo..."
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1">Mercado Objetivo</label>
+                {isEditing ? (
+                  <textarea
+                    value={formData.targetMarket}
+                    onChange={(e) => setFormData({ ...formData, targetMarket: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    rows={2}
+                    placeholder="Describe tu mercado objetivo..."
+                  />
+                ) : (
+                  <p className="text-white">{formData.targetMarket || 'No especificado'}</p>
+                )}
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Modelo de Negocio
-                </label>
-                <select
-                  value={formData.businessModel}
-                  onChange={(e) => setFormData({ ...formData, businessModel: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                >
-                  <option value="">Seleccionar modelo</option>
-                  <option value="B2C - Venta directa">B2C - Venta directa</option>
-                  <option value="B2B - Empresa a empresa">B2B - Empresa a empresa</option>
-                  <option value="SaaS - Software como servicio">SaaS - Software como servicio</option>
-                  <option value="Marketplace">Marketplace</option>
-                  <option value="Suscripción">Suscripción</option>
-                  <option value="Freemium">Freemium</option>
-                  <option value="Otro">Otro</option>
-                </select>
-              </div>
-            </div>
 
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Propuesta de Valor Única
-              </label>
-              <textarea
-                value={formData.uniqueValue}
-                onChange={(e) => setFormData({ ...formData, uniqueValue: e.target.value })}
-                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                rows={2}
-                placeholder="¿Qué te diferencia de la competencia?"
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Modelo de Negocio</label>
+                {isEditing ? (
+                  <select
+                    value={formData.businessModel}
+                    onChange={(e) => setFormData({ ...formData, businessModel: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                  >
+                    <option value="">Seleccionar modelo</option>
+                    <option value="B2C">B2C - Directo al consumidor</option>
+                    <option value="B2B">B2B - Empresa a empresa</option>
+                    <option value="SaaS">SaaS - Software como servicio</option>
+                    <option value="Marketplace">Marketplace</option>
+                    <option value="Suscripción">Suscripción</option>
+                    <option value="Freemium">Freemium</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                ) : (
+                  <p className="text-white">{formData.businessModel || 'No especificado'}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Propuesta de Valor Única</label>
+                {isEditing ? (
+                  <textarea
+                    value={formData.uniqueValue}
+                    onChange={(e) => setFormData({ ...formData, uniqueValue: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    rows={2}
+                    placeholder="¿Qué te hace único?"
+                  />
+                ) : (
+                  <p className="text-white">{formData.uniqueValue || 'No especificada'}</p>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Productos y Competencia */}
           <div className="feature-card">
-            <h3 className="text-lg font-semibold mb-4">Productos y Competencia</h3>
-            <div className="grid md:grid-cols-2 gap-4">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <Zap className="w-5 h-5 mr-2 text-neon-blue" />
+              Productos y Competencia
+            </h3>
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Productos/Servicios Clave
-                </label>
-                <textarea
-                  value={Array.isArray(formData.keyProducts) ? formData.keyProducts.join(', ') : formData.keyProducts}
-                  onChange={(e) => setFormData({ ...formData, keyProducts: e.target.value.split(', ').filter(p => p.trim()) })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  rows={3}
-                  placeholder="Producto 1, Producto 2, Servicio 1..."
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1">Productos/Servicios Clave</label>
+                {isEditing ? (
+                  <textarea
+                    value={Array.isArray(formData.keyProducts) ? formData.keyProducts.join(', ') : formData.keyProducts}
+                    onChange={(e) => setFormData({ ...formData, keyProducts: e.target.value.split(', ').filter(p => p.trim()) })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    rows={2}
+                    placeholder="Producto 1, Producto 2, Producto 3..."
+                  />
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {(Array.isArray(formData.keyProducts) ? formData.keyProducts : []).map((product: string, index: number) => (
+                      <span key={index} className="px-2 py-1 bg-neon-blue/10 text-neon-blue rounded text-sm">
+                        {product}
+                      </span>
+                    ))}
+                    {(!formData.keyProducts || formData.keyProducts.length === 0) && (
+                      <p className="text-gray-400">No especificados</p>
+                    )}
+                  </div>
+                )}
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Principales Competidores
-                </label>
-                <textarea
-                  value={Array.isArray(formData.competitors) ? formData.competitors.join(', ') : formData.competitors}
-                  onChange={(e) => setFormData({ ...formData, competitors: e.target.value.split(', ').filter(c => c.trim()) })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  rows={3}
-                  placeholder="Competidor 1, Competidor 2..."
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1">Principales Competidores</label>
+                {isEditing ? (
+                  <textarea
+                    value={Array.isArray(formData.competitors) ? formData.competitors.join(', ') : formData.competitors}
+                    onChange={(e) => setFormData({ ...formData, competitors: e.target.value.split(', ').filter(c => c.trim()) })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    rows={2}
+                    placeholder="Competidor 1, Competidor 2, Competidor 3..."
+                  />
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {(Array.isArray(formData.competitors) ? formData.competitors : []).map((competitor: string, index: number) => (
+                      <span key={index} className="px-2 py-1 bg-red-500/10 text-red-400 rounded text-sm">
+                        {competitor}
+                      </span>
+                    ))}
+                    {(!formData.competitors || formData.competitors.length === 0) && (
+                      <p className="text-gray-400">No especificados</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Desafíos y Objetivos */}
+        {/* Desafíos y Objetivos */}
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
           <div className="feature-card">
-            <h3 className="text-lg font-semibold mb-4">Desafíos y Objetivos</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Principales Desafíos
-                </label>
-                <textarea
-                  value={Array.isArray(formData.challenges) ? formData.challenges.join(', ') : formData.challenges}
-                  onChange={(e) => setFormData({ ...formData, challenges: e.target.value.split(', ').filter(c => c.trim()) })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  rows={3}
-                  placeholder="Desafío 1, Desafío 2..."
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Objetivos a Corto Plazo
-                </label>
-                <textarea
-                  value={Array.isArray(formData.goals) ? formData.goals.join(', ') : formData.goals}
-                  onChange={(e) => setFormData({ ...formData, goals: e.target.value.split(', ').filter(g => g.trim()) })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  rows={3}
-                  placeholder="Objetivo 1, Objetivo 2..."
-                />
-              </div>
-            </div>
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <AlertCircle className="w-5 h-5 mr-2 text-yellow-500" />
+              Principales Desafíos
+            </h3>
+            {isEditing ? (
+              <textarea
+                value={Array.isArray(formData.challenges) ? formData.challenges.join('\n') : formData.challenges}
+                onChange={(e) => setFormData({ ...formData, challenges: e.target.value.split('\n').filter(c => c.trim()) })}
+                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                rows={4}
+                placeholder="Desafío 1&#10;Desafío 2&#10;Desafío 3..."
+              />
+            ) : (
+              <ul className="space-y-2">
+                {(Array.isArray(formData.challenges) ? formData.challenges : []).map((challenge: string, index: number) => (
+                  <li key={index} className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full mt-2 flex-shrink-0"></span>
+                    <span className="text-gray-300">{challenge}</span>
+                  </li>
+                ))}
+                {(!formData.challenges || formData.challenges.length === 0) && (
+                  <p className="text-gray-400">No especificados</p>
+                )}
+              </ul>
+            )}
           </div>
 
-          <div className="flex space-x-4 pt-4">
-            <button type="submit" className="flex-1 neon-button">
-              Guardar Perfil
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 border border-gray-700 hover:border-neon-blue px-4 py-2 rounded-lg transition-colors"
-            >
-              Cancelar
-            </button>
+          <div className="feature-card">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <Award className="w-5 h-5 mr-2 text-green-500" />
+              Objetivos y Metas
+            </h3>
+            {isEditing ? (
+              <textarea
+                value={Array.isArray(formData.goals) ? formData.goals.join('\n') : formData.goals}
+                onChange={(e) => setFormData({ ...formData, goals: e.target.value.split('\n').filter(g => g.trim()) })}
+                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                rows={4}
+                placeholder="Objetivo 1&#10;Objetivo 2&#10;Objetivo 3..."
+              />
+            ) : (
+              <ul className="space-y-2">
+                {(Array.isArray(formData.goals) ? formData.goals : []).map((goal: string, index: number) => (
+                  <li key={index} className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                    <span className="text-gray-300">{goal}</span>
+                  </li>
+                ))}
+                {(!formData.goals || formData.goals.length === 0) && (
+                  <p className="text-gray-400">No especificados</p>
+                )}
+              </ul>
+            )}
           </div>
-        </form>
+        </div>
       </motion.div>
     </div>
   );
@@ -432,11 +556,10 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({
     username: user.username,
+    email: user.email,
     firstName: user.firstName || '',
     lastName: user.lastName || '',
-    email: user.email,
     phone: user.phone || '',
-    country: user.country || 'Chile',
     city: user.city || '',
     industry: user.industry || '',
     experience: user.experience || 'Principiante',
@@ -481,11 +604,10 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
     const updatedUser = {
       ...user,
       username: editForm.username,
+      email: editForm.email,
       firstName: editForm.firstName,
       lastName: editForm.lastName,
-      email: editForm.email,
       phone: editForm.phone,
-      country: editForm.country,
       city: editForm.city,
       industry: editForm.industry,
       experience: editForm.experience,
@@ -505,12 +627,6 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
     onUpdateUser(updatedUser);
   };
 
-  const handleSaveBusinessProfile = (businessName: string, businessData: any) => {
-    // Aquí se guardaría el perfil del negocio
-    // Por ahora solo cerramos el modal
-    setSelectedBusiness(null);
-  };
-
   const tabs = [
     { id: 'profile', label: 'Perfil', icon: User },
     { id: 'plan', label: 'Plan', icon: Crown },
@@ -521,13 +637,16 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
 
   return (
     <div className="fixed inset-0 bg-deep-dark z-50 overflow-hidden">
-      {/* Business Profile Modal */}
       {selectedBusiness && (
         <BusinessProfileModal
           business={selectedBusiness}
           businessData={businessProfiles[selectedBusiness]}
           onClose={() => setSelectedBusiness(null)}
-          onSave={(data) => handleSaveBusinessProfile(selectedBusiness, data)}
+          onUpdate={(updatedData) => {
+            // Aquí podrías actualizar los perfiles de negocio
+            console.log('Updating business profile:', updatedData);
+            setSelectedBusiness(null);
+          }}
         />
       )}
 
@@ -555,10 +674,7 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
               </div>
               <div>
                 <h2 className="font-semibold text-white">
-                  {user.firstName && user.lastName 
-                    ? `${user.firstName} ${user.lastName}` 
-                    : user.username
-                  }
+                  {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username}
                 </h2>
                 <p className="text-sm text-gray-400">{user.email}</p>
               </div>
@@ -598,7 +714,7 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-2xl"
+                className="max-w-4xl"
               >
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold">Información Personal</h2>
@@ -624,11 +740,10 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
                           setIsEditing(false);
                           setEditForm({
                             username: user.username,
+                            email: user.email,
                             firstName: user.firstName || '',
                             lastName: user.lastName || '',
-                            email: user.email,
                             phone: user.phone || '',
-                            country: user.country || 'Chile',
                             city: user.city || '',
                             industry: user.industry || '',
                             experience: user.experience || 'Principiante',
@@ -645,181 +760,196 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
                   )}
                 </div>
 
-                <div className="feature-card space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">
-                        Nombre
-                      </label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={editForm.firstName}
-                          onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
-                          className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                        />
-                      ) : (
-                        <p className="text-white">{user.firstName || 'No especificado'}</p>
-                      )}
-                    </div>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Información Básica */}
+                  <div className="feature-card">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center">
+                      <User className="w-5 h-5 mr-2 text-neon-blue" />
+                      Información Básica
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-400 mb-1">
+                            Nombre
+                          </label>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={editForm.firstName}
+                              onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
+                              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                            />
+                          ) : (
+                            <p className="text-white">{user.firstName || 'No especificado'}</p>
+                          )}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-400 mb-1">
+                            Apellido
+                          </label>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={editForm.lastName}
+                              onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
+                              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                            />
+                          ) : (
+                            <p className="text-white">{user.lastName || 'No especificado'}</p>
+                          )}
+                        </div>
+                      </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">
-                        Apellido
-                      </label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={editForm.lastName}
-                          onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
-                          className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                        />
-                      ) : (
-                        <p className="text-white">{user.lastName || 'No especificado'}</p>
-                      )}
-                    </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                          Nombre de Usuario
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editForm.username}
+                            onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                          />
+                        ) : (
+                          <p className="text-white">{user.username}</p>
+                        )}
+                      </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">
-                        Nombre de Usuario
-                      </label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={editForm.username}
-                          onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
-                          className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                        />
-                      ) : (
-                        <p className="text-white">{user.username}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">
-                        Email
-                      </label>
-                      {isEditing ? (
-                        <input
-                          type="email"
-                          value={editForm.email}
-                          onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                          className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                        />
-                      ) : (
-                        <p className="text-white">{user.email}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">
-                        Teléfono
-                      </label>
-                      {isEditing ? (
-                        <input
-                          type="tel"
-                          value={editForm.phone}
-                          onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                          className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                        />
-                      ) : (
-                        <p className="text-white">{user.phone || 'No especificado'}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">
-                        País
-                      </label>
-                      {isEditing ? (
-                        <select
-                          value={editForm.country}
-                          onChange={(e) => setEditForm({ ...editForm, country: e.target.value })}
-                          className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                        >
-                          <option value="Chile">Chile</option>
-                          <option value="Argentina">Argentina</option>
-                          <option value="Colombia">Colombia</option>
-                          <option value="Perú">Perú</option>
-                          <option value="México">México</option>
-                          <option value="España">España</option>
-                          <option value="Otro">Otro</option>
-                        </select>
-                      ) : (
-                        <p className="text-white">{user.country || 'No especificado'}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">
-                        Ciudad
-                      </label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={editForm.city}
-                          onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
-                          className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                        />
-                      ) : (
-                        <p className="text-white">{user.city || 'No especificado'}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">
-                        Industria
-                      </label>
-                      {isEditing ? (
-                        <select
-                          value={editForm.industry}
-                          onChange={(e) => setEditForm({ ...editForm, industry: e.target.value })}
-                          className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                        >
-                          <option value="">Seleccionar</option>
-                          <option value="Tecnología">Tecnología</option>
-                          <option value="Alimentación">Alimentación</option>
-                          <option value="Retail">Retail</option>
-                          <option value="Servicios">Servicios</option>
-                          <option value="Salud">Salud</option>
-                          <option value="Educación">Educación</option>
-                          <option value="Fintech">Fintech</option>
-                          <option value="Marketing">Marketing</option>
-                          <option value="Consultoría">Consultoría</option>
-                          <option value="Otro">Otro</option>
-                        </select>
-                      ) : (
-                        <p className="text-white">{user.industry || 'No especificado'}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-400 mb-2">
-                        Experiencia
-                      </label>
-                      {isEditing ? (
-                        <select
-                          value={editForm.experience}
-                          onChange={(e) => setEditForm({ ...editForm, experience: e.target.value })}
-                          className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                        >
-                          <option value="Principiante">Principiante</option>
-                          <option value="Intermedio">Intermedio</option>
-                          <option value="Avanzado">Avanzado</option>
-                          <option value="Experto">Experto</option>
-                        </select>
-                      ) : (
-                        <p className="text-white">{user.experience || 'No especificado'}</p>
-                      )}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                          Email
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="email"
+                            value={editForm.email}
+                            onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                          />
+                        ) : (
+                          <p className="text-white">{user.email}</p>
+                        )}
+                      </div>
                     </div>
                   </div>
 
+                  {/* Información de Contacto */}
+                  <div className="feature-card">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center">
+                      <Phone className="w-5 h-5 mr-2 text-neon-blue" />
+                      Contacto y Ubicación
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                          Teléfono
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="tel"
+                            value={editForm.phone}
+                            onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                            placeholder="+56 9 1234 5678"
+                          />
+                        ) : (
+                          <p className="text-white">{user.phone || 'No especificado'}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                          Ciudad
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editForm.city}
+                            onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
+                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                            placeholder="Santiago"
+                          />
+                        ) : (
+                          <p className="text-white">{user.city || 'No especificada'}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                          País
+                        </label>
+                        <p className="text-white">{user.country || 'Chile'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Información Profesional */}
+                  <div className="feature-card">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center">
+                      <Briefcase className="w-5 h-5 mr-2 text-neon-blue" />
+                      Información Profesional
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                          Industria
+                        </label>
+                        {isEditing ? (
+                          <select
+                            value={editForm.industry}
+                            onChange={(e) => setEditForm({ ...editForm, industry: e.target.value })}
+                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                          >
+                            <option value="">Seleccionar</option>
+                            <option value="Tecnología">Tecnología</option>
+                            <option value="Alimentación">Alimentación</option>
+                            <option value="Retail">Retail</option>
+                            <option value="Servicios">Servicios</option>
+                            <option value="Salud">Salud</option>
+                            <option value="Educación">Educación</option>
+                            <option value="Fintech">Fintech</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Otro">Otro</option>
+                          </select>
+                        ) : (
+                          <p className="text-white">{user.industry || 'No especificada'}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                          Nivel de Experiencia
+                        </label>
+                        {isEditing ? (
+                          <select
+                            value={editForm.experience}
+                            onChange={(e) => setEditForm({ ...editForm, experience: e.target.value })}
+                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                          >
+                            <option value="Principiante">Principiante</option>
+                            <option value="Intermedio">Intermedio</option>
+                            <option value="Avanzado">Avanzado</option>
+                            <option value="Experto">Experto</option>
+                          </select>
+                        ) : (
+                          <p className="text-white">{user.experience || 'Principiante'}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Cambiar Contraseña */}
                   {isEditing && (
-                    <div className="border-t border-gray-800 pt-6">
-                      <h3 className="text-lg font-semibold mb-4">Cambiar Contraseña</h3>
+                    <div className="feature-card">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center">
+                        <Lock className="w-5 h-5 mr-2 text-neon-blue" />
+                        Cambiar Contraseña
+                      </h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-400 mb-2">
+                          <label className="block text-sm font-medium text-gray-400 mb-1">
                             Contraseña Actual
                           </label>
                           <div className="relative">
@@ -827,7 +957,7 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
                               type={showPassword ? 'text' : 'password'}
                               value={editForm.currentPassword}
                               onChange={(e) => setEditForm({ ...editForm, currentPassword: e.target.value })}
-                              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:border-neon-blue transition-colors"
+                              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:border-neon-blue transition-colors"
                             />
                             <button
                               type="button"
@@ -840,26 +970,26 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-400 mb-2">
+                          <label className="block text-sm font-medium text-gray-400 mb-1">
                             Nueva Contraseña
                           </label>
                           <input
                             type={showPassword ? 'text' : 'password'}
                             value={editForm.newPassword}
                             onChange={(e) => setEditForm({ ...editForm, newPassword: e.target.value })}
-                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-400 mb-2">
+                          <label className="block text-sm font-medium text-gray-400 mb-1">
                             Confirmar Nueva Contraseña
                           </label>
                           <input
                             type={showPassword ? 'text' : 'password'}
                             value={editForm.confirmPassword}
                             onChange={(e) => setEditForm({ ...editForm, confirmPassword: e.target.value })}
-                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:border-neon-blue transition-colors"
                           />
                         </div>
                       </div>
@@ -986,17 +1116,17 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
                               <div>
                                 <h3 className="font-semibold text-white">{business}</h3>
                                 <p className="text-sm text-gray-400">
-                                  {businessData?.industry || 'Industria no especificada'}
+                                  {businessData?.stage || 'Idea'} • {businessData?.industry || 'Sin categoría'}
                                 </p>
                               </div>
                             </div>
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => setSelectedBusiness(business)}
-                                className="text-gray-400 hover:text-neon-blue transition-colors"
-                                title="Editar perfil"
+                                className="text-neon-blue hover:text-white transition-colors"
+                                title="Ver perfil completo"
                               >
-                                <Edit3 className="w-4 h-4" />
+                                <Eye className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => handleDeleteBusiness(business)}
@@ -1008,55 +1138,26 @@ export default function UserProfile({ user, onClose, onUpdateUser, businessProfi
                             </div>
                           </div>
                           
-                          {businessData && (
-                            <div className="space-y-2 text-sm">
-                              <div className="flex items-center space-x-2">
-                                <CalendarIcon className="w-4 h-4 text-gray-400" />
-                                <span className="text-gray-400">Etapa:</span>
-                                <span className="text-white">{businessData.stage}</span>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <Users className="w-4 h-4 text-gray-400" />
-                                <span className="text-gray-400">Empleados:</span>
-                                <span className="text-white">{businessData.employees}</span>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <MapPin className="w-4 h-4 text-gray-400" />
-                                <span className="text-gray-400">Ubicación:</span>
-                                <span className="text-white">{businessData.location}</span>
-                              </div>
-                              {businessData.website && (
-                                <div className="flex items-center space-x-2">
-                                  <ExternalLink className="w-4 h-4 text-gray-400" />
-                                  <a 
-                                    href={businessData.website} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="text-neon-blue hover:text-white transition-colors"
-                                  >
-                                    Sitio Web
-                                  </a>
-                                </div>
-                              )}
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Empleados</span>
+                              <span className="text-white">{businessData?.employees || 1}</span>
                             </div>
-                          )}
-                          
-                          <div className="mt-4 pt-4 border-t border-gray-800">
-                            <div className="grid grid-cols-3 gap-4 text-center">
-                              <div>
-                                <p className="text-lg font-semibold text-white">{Math.floor(Math.random() * 8) + 2}</p>
-                                <p className="text-xs text-gray-400">Fondos</p>
-                              </div>
-                              <div>
-                                <p className="text-lg font-semibold text-white">{Math.floor(Math.random() * 25) + 5}</p>
-                                <p className="text-xs text-gray-400">Contenido</p>
-                              </div>
-                              <div>
-                                <p className="text-lg font-semibold text-white">{Math.floor(Math.random() * 7) + 1}d</p>
-                                <p className="text-xs text-gray-400">Última actividad</p>
-                              </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Ingresos</span>
+                              <span className="text-white">{businessData?.revenue || '$0'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Ubicación</span>
+                              <span className="text-white">{businessData?.location || 'No especificada'}</span>
                             </div>
                           </div>
+
+                          {businessData?.description && (
+                            <div className="mt-4 pt-4 border-t border-gray-800">
+                              <p className="text-gray-300 text-sm line-clamp-2">{businessData.description}</p>
+                            </div>
+                          )}
                         </div>
                       );
                     })}
