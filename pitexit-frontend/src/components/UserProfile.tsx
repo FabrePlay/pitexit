@@ -28,8 +28,7 @@ import {
   Phone,
   MapPin,
   Briefcase,
-  Star,
-  ChevronRight
+  Star
 } from 'lucide-react';
 
 interface UserProfileProps {
@@ -196,12 +195,6 @@ export default function UserProfile({
       businesses: user.businesses.filter(b => b !== businessName)
     };
     onUpdateUser(updatedUser);
-  };
-
-  const handleBusinessClick = (businessName: string) => {
-    if (onNavigateToPlayground) {
-      onNavigateToPlayground(businessName);
-    }
   };
 
   const tabs = [
@@ -645,7 +638,7 @@ export default function UserProfile({
                     {user.businesses.map((business, index) => {
                       const businessProfile = businessProfiles?.[business];
                       return (
-                        <div key={index} className="feature-card group cursor-pointer hover:border-neon-blue/50 transition-all duration-300">
+                        <div key={index} className="feature-card">
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center space-x-3">
                               <div className="w-10 h-10 rounded-lg bg-neon-blue/10 flex items-center justify-center">
@@ -658,27 +651,12 @@ export default function UserProfile({
                                 </p>
                               </div>
                             </div>
-                            <div className="flex items-center space-x-2">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleBusinessClick(business);
-                                }}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-neon-blue hover:text-white"
-                                title="Ir al Playground"
-                              >
-                                <ChevronRight className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDeleteBusiness(business);
-                                }}
-                                className="text-gray-400 hover:text-red-500 transition-colors"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
+                            <button
+                              onClick={() => handleDeleteBusiness(business)}
+                              className="text-gray-400 hover:text-red-500 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                           
                           {businessProfile && (
@@ -711,12 +689,6 @@ export default function UserProfile({
                               <span className="text-white">Hace {Math.floor(Math.random() * 7) + 1} días</span>
                             </div>
                           </div>
-
-                          {/* Click overlay */}
-                          <div 
-                            className="absolute inset-0 rounded-xl"
-                            onClick={() => handleBusinessClick(business)}
-                          />
                         </div>
                       );
                     })}

@@ -164,6 +164,43 @@ const MOCK_STRUCTURED_RESULTS: { [businessName: string]: StructuredResult[] } = 
       },
       createdAt: new Date('2024-01-10'),
       businessName: 'Café Artesanal'
+    },
+    {
+      id: 'content-reel-1',
+      type: 'content_reel_script',
+      title: 'Guiones para Reels - Café Artesanal',
+      content: {
+        reels: [
+          {
+            titulo: 'El Arte del Café Perfecto',
+            duracion: '30 segundos',
+            hook: '¿Sabías que el 90% de las personas prepara mal su café?',
+            desarrollo: [
+              'Mostrar granos de café de origen único',
+              'Demostrar la técnica de molienda correcta',
+              'Revelar el secreto de la temperatura del agua',
+              'Mostrar el resultado final: una taza perfecta'
+            ],
+            cta: 'Ven a descubrir el verdadero sabor del café en Café Artesanal',
+            hashtags: ['#CafeArtesanal', '#CafeDeOrigen', '#BaristaLife', '#CafePerfecto', '#Santiago']
+          },
+          {
+            titulo: 'De la Semilla a tu Taza',
+            duracion: '45 segundos',
+            hook: 'Este grano viajó 8,000 km para llegar a tu taza',
+            desarrollo: [
+              'Mostrar el origen del café en finca colombiana',
+              'Proceso de selección y tostado artesanal',
+              'Preparación por barista experto',
+              'Momento de degustación del cliente'
+            ],
+            cta: 'Vive la experiencia completa del café. Visítanos hoy',
+            hashtags: ['#CafeDeOrigen', '#Trazabilidad', '#CafeArtesanal', '#ExperienciaCafe']
+          }
+        ]
+      },
+      createdAt: new Date('2024-01-12'),
+      businessName: 'Café Artesanal'
     }
   ],
   'TechStart': [
@@ -233,6 +270,43 @@ const MOCK_STRUCTURED_RESULTS: { [businessName: string]: StructuredResult[] } = 
         ]
       },
       createdAt: new Date('2024-01-08'),
+      businessName: 'TechStart'
+    },
+    {
+      id: 'content-reel-2',
+      type: 'content_reel_script',
+      title: 'Guiones para Reels - TechStart',
+      content: {
+        reels: [
+          {
+            titulo: 'IA que Predice el Futuro de tu Proyecto',
+            duracion: '30 segundos',
+            hook: '¿Y si pudieras saber si tu proyecto se retrasará antes de que suceda?',
+            desarrollo: [
+              'Mostrar dashboard con alertas de IA',
+              'Demostrar predicción de retrasos en tiempo real',
+              'Mostrar sugerencias automáticas de optimización',
+              'Resultado: proyecto entregado a tiempo'
+            ],
+            cta: 'Prueba TechStart gratis y nunca más te retrases',
+            hashtags: ['#TechStart', '#IA', '#GestionProyectos', '#Productividad', '#Startup']
+          },
+          {
+            titulo: 'Adiós a las Reuniones Innecesarias',
+            duracion: '45 segundos',
+            hook: 'Tu equipo pierde 23 horas al mes en reuniones que podrían ser un mensaje',
+            desarrollo: [
+              'Mostrar calendario lleno de reuniones',
+              'Demostrar cómo TechStart automatiza updates',
+              'IA genera reportes automáticos de progreso',
+              'Equipo enfocado en trabajo real, no reuniones'
+            ],
+            cta: 'Recupera tu tiempo. Prueba TechStart hoy',
+            hashtags: ['#Productividad', '#TechStart', '#IA', '#Automatizacion', '#Eficiencia']
+          }
+        ]
+      },
+      createdAt: new Date('2024-01-14'),
       businessName: 'TechStart'
     }
   ]
@@ -447,10 +521,11 @@ export default function AIAgentInterface({
   
   const [inputValue, setInputValue] = useState('');
   const [showResult, setShowResult] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
   const [showCreateBusiness, setShowCreateBusiness] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showDashboard, setShowDashboard] = useState(false);
   const [isResultMaximized, setIsResultMaximized] = useState(false);
+  const [isDashboardMaximized, setIsDashboardMaximized] = useState(false);
   const [copiedText, setCopiedText] = useState(false);
   const [selectedResultId, setSelectedResultId] = useState<string | null>(null);
   
@@ -570,52 +645,31 @@ export default function AIAgentInterface({
 
   const currentResult = businessResults.find(r => r.id === selectedResultId);
 
-  // Mostrar Dashboard
-  if (showDashboard && selectedBusiness) {
-    return (
-      <div className="h-screen bg-deep-dark overflow-hidden">
-        <div className="h-full flex flex-col">
-          {/* Header */}
-          <div className="bg-dark-surface p-4 border-b border-gray-800 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => setShowDashboard(false)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <div className="w-8 h-8 rounded-lg bg-neon-blue/10 flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-neon-blue" />
-              </div>
-              <div>
-                <h1 className="font-bold gradient-text">Dashboard</h1>
-                <p className="text-sm text-gray-400">{selectedBusiness}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => setShowNotifications(true)}
-                className="relative p-2 text-gray-400 hover:text-white transition-colors"
-              >
-                <Bell className="w-5 h-5" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-              </button>
-              <span className="text-sm text-neon-blue">{selectedBusiness}</span>
-            </div>
-          </div>
-          
-          {/* Dashboard Content */}
-          <div className="flex-1 overflow-y-auto">
-            <BusinessDashboard 
-              businessName={selectedBusiness}
-              workPlans={businessWorkPlans}
-              currentUser={currentUser}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Calcular el ancho del chat según qué paneles están abiertos
+  const getChatWidth = () => {
+    const panelsOpen = (showResult ? 1 : 0) + (showDashboard ? 1 : 0);
+    if (panelsOpen === 0) return 'w-full';
+    if (panelsOpen === 1) {
+      if ((showResult && isResultMaximized) || (showDashboard && isDashboardMaximized)) {
+        return 'w-0 hidden';
+      }
+      return 'w-1/2';
+    }
+    if (panelsOpen === 2) return 'w-1/3';
+    return 'w-full';
+  };
+
+  const getPanelWidth = () => {
+    const panelsOpen = (showResult ? 1 : 0) + (showDashboard ? 1 : 0);
+    if (panelsOpen === 1) {
+      if ((showResult && isResultMaximized) || (showDashboard && isDashboardMaximized)) {
+        return 'w-full';
+      }
+      return 'w-1/2';
+    }
+    if (panelsOpen === 2) return 'w-1/3';
+    return 'w-1/2';
+  };
 
   return (
     <div className="h-screen bg-deep-dark flex overflow-hidden">
@@ -723,9 +777,7 @@ export default function AIAgentInterface({
       )}
 
       {/* Chat Section */}
-      <div className={`transition-all duration-500 ease-in-out ${
-        showResult && !isResultMaximized ? 'w-1/2' : 'w-full'
-      } flex flex-col h-full`}>
+      <div className={`transition-all duration-500 ease-in-out ${getChatWidth()} flex flex-col h-full`}>
         {/* Chat Header */}
         <div className="bg-dark-surface p-6 border-b border-gray-800 flex-shrink-0">
           <div className="flex items-center justify-between">
@@ -762,7 +814,7 @@ export default function AIAgentInterface({
               {/* Dashboard Button */}
               {selectedBusiness && (
                 <button
-                  onClick={() => setShowDashboard(true)}
+                  onClick={() => setShowDashboard(!showDashboard)}
                   className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-lg transition-colors"
                 >
                   <BarChart3 className="w-4 h-4 text-neon-blue" />
@@ -943,6 +995,64 @@ export default function AIAgentInterface({
         </div>
       </div>
 
+      {/* Dashboard Panel */}
+      <AnimatePresence>
+        {showDashboard && selectedBusiness && (
+          <motion.div
+            initial={{ x: '100%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '100%', opacity: 0 }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            className={`${
+              isDashboardMaximized ? 'fixed inset-0 z-50' : getPanelWidth()
+            } bg-dark-surface border-l border-gray-800 flex flex-col h-full`}
+          >
+            {/* Dashboard Header */}
+            <div className="p-6 border-b border-gray-800 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-lg bg-neon-blue/10 flex items-center justify-center">
+                  <BarChart3 className="w-5 h-5 text-neon-blue" />
+                </div>
+                <div>
+                  <h2 className="font-semibold text-white">Dashboard</h2>
+                  <p className="text-sm text-gray-400">{selectedBusiness}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setIsDashboardMaximized(!isDashboardMaximized)}
+                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                  title={isDashboardMaximized ? "Minimizar" : "Maximizar"}
+                >
+                  {isDashboardMaximized ? (
+                    <Minimize2 className="w-4 h-4 text-gray-400" />
+                  ) : (
+                    <Maximize2 className="w-4 h-4 text-gray-400" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowDashboard(false)}
+                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                  title="Cerrar"
+                >
+                  <X className="w-4 h-4 text-gray-400" />
+                </button>
+              </div>
+            </div>
+
+            {/* Dashboard Content */}
+            <div className="flex-1 overflow-y-auto">
+              <BusinessDashboard 
+                businessName={selectedBusiness}
+                workPlans={businessWorkPlans}
+                currentUser={currentUser}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Result Panel */}
       <AnimatePresence>
         {showResult && businessResults.length > 0 && (
@@ -952,7 +1062,7 @@ export default function AIAgentInterface({
             exit={{ x: '100%', opacity: 0 }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
             className={`${
-              isResultMaximized ? 'fixed inset-0 z-50' : 'w-1/2'
+              isResultMaximized ? 'fixed inset-0 z-50' : getPanelWidth()
             } bg-dark-surface border-l border-gray-800 flex flex-col h-full`}
           >
             {/* Result Header */}
