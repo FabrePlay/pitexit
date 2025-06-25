@@ -15,12 +15,19 @@ const BUSINESS_LIMITS = {
   'Agencia Premium': 100
 };
 
-// Usuarios ficticios para cada plan
+// Usuarios ficticios para cada plan con más campos
 const MOCK_USERS = {
   free: {
     email: 'free@example.com',
     password: 'password123',
     username: 'emprendedor_free',
+    firstName: 'Juan',
+    lastName: 'Pérez',
+    phone: '+56 9 1234 5678',
+    country: 'Chile',
+    city: 'Santiago',
+    industry: 'Tecnología',
+    experience: 'Principiante',
     plan: 'Gratis',
     businesses: []
   },
@@ -28,6 +35,13 @@ const MOCK_USERS = {
     email: 'basic@example.com',
     password: 'password123',
     username: 'emprendedor_basic',
+    firstName: 'María',
+    lastName: 'González',
+    phone: '+56 9 8765 4321',
+    country: 'Chile',
+    city: 'Valparaíso',
+    industry: 'Alimentación',
+    experience: 'Intermedio',
     plan: 'Básico',
     businesses: ['Café Artesanal']
   },
@@ -35,6 +49,13 @@ const MOCK_USERS = {
     email: 'pro@example.com',
     password: 'password123',
     username: 'emprendedor_pro',
+    firstName: 'Carlos',
+    lastName: 'Rodríguez',
+    phone: '+56 9 5555 1234',
+    country: 'Chile',
+    city: 'Concepción',
+    industry: 'Tecnología',
+    experience: 'Avanzado',
     plan: 'Pro',
     businesses: ['TechStart', 'EcoShop', 'Digital Marketing']
   },
@@ -42,6 +63,13 @@ const MOCK_USERS = {
     email: 'premium@example.com',
     password: 'password123',
     username: 'emprendedor_premium',
+    firstName: 'Ana',
+    lastName: 'Silva',
+    phone: '+56 9 9999 8888',
+    country: 'Chile',
+    city: 'La Serena',
+    industry: 'Consultoría',
+    experience: 'Experto',
     plan: 'Premium',
     businesses: ['Café Artesanal', 'TechStart', 'EcoShop', 'Digital Agency']
   },
@@ -49,6 +77,13 @@ const MOCK_USERS = {
     email: 'agency.basic@example.com',
     password: 'password123',
     username: 'agencia_basic',
+    firstName: 'Roberto',
+    lastName: 'Martínez',
+    phone: '+56 9 7777 6666',
+    country: 'Chile',
+    city: 'Antofagasta',
+    industry: 'Marketing',
+    experience: 'Avanzado',
     plan: 'Agencia Básica',
     businesses: ['Cliente 1', 'Cliente 2', 'Cliente 3']
   },
@@ -56,6 +91,13 @@ const MOCK_USERS = {
     email: 'agency.pro@example.com',
     password: 'password123',
     username: 'agencia_pro',
+    firstName: 'Patricia',
+    lastName: 'López',
+    phone: '+56 9 4444 3333',
+    country: 'Chile',
+    city: 'Temuco',
+    industry: 'Marketing',
+    experience: 'Experto',
     plan: 'Agencia Pro',
     businesses: ['Cliente 1', 'Cliente 2', 'Cliente 3', 'Cliente 4']
   },
@@ -63,8 +105,55 @@ const MOCK_USERS = {
     email: 'agency.premium@example.com',
     password: 'password123',
     username: 'agencia_premium',
+    firstName: 'Diego',
+    lastName: 'Morales',
+    phone: '+56 9 2222 1111',
+    country: 'Chile',
+    city: 'Iquique',
+    industry: 'Marketing',
+    experience: 'Experto',
     plan: 'Agencia Premium',
     businesses: ['Cliente 1', 'Cliente 2', 'Cliente 3', 'Cliente 4', 'Cliente 5']
+  }
+};
+
+// Perfiles detallados de negocios
+const BUSINESS_PROFILES = {
+  'Café Artesanal': {
+    name: 'Café Artesanal',
+    description: 'Cafetería especializada en café de origen único y métodos de preparación artesanales',
+    industry: 'Alimentación y Bebidas',
+    stage: 'Operando',
+    foundedDate: '2023-01-15',
+    employees: 5,
+    location: 'Santiago, Chile',
+    website: 'www.cafeartesanal.cl',
+    revenue: '$15.000.000',
+    targetMarket: 'Amantes del café premium, profesionales urbanos',
+    businessModel: 'B2C - Venta directa y suscripciones',
+    keyProducts: ['Café de origen', 'Métodos de preparación', 'Cursos de barista'],
+    competitors: ['Starbucks', 'Juan Valdez', 'Café Altura'],
+    uniqueValue: 'Experiencia completa del café desde el grano hasta la taza',
+    challenges: ['Competencia con grandes cadenas', 'Costos de importación', 'Educación del mercado'],
+    goals: ['Expandir a 3 sucursales', 'Lanzar línea de productos retail', 'Certificación orgánica']
+  },
+  'TechStart': {
+    name: 'TechStart',
+    description: 'Plataforma SaaS para gestión de proyectos con IA integrada',
+    industry: 'Tecnología',
+    stage: 'MVP',
+    foundedDate: '2024-03-01',
+    employees: 3,
+    location: 'Santiago, Chile',
+    website: 'www.techstart.cl',
+    revenue: '$2.000.000',
+    targetMarket: 'Equipos de desarrollo, startups, empresas medianas',
+    businessModel: 'SaaS - Suscripción mensual',
+    keyProducts: ['Gestión de proyectos', 'IA para estimaciones', 'Analytics avanzados'],
+    competitors: ['Jira', 'Asana', 'Monday.com'],
+    uniqueValue: 'IA que predice retrasos y optimiza recursos automáticamente',
+    challenges: ['Competencia establecida', 'Adquisición de usuarios', 'Desarrollo de IA'],
+    goals: ['100 usuarios pagos', 'Ronda de inversión Serie A', 'Expansión regional']
   }
 };
 
@@ -110,19 +199,45 @@ function UpgradeModal({ onClose, currentPlan }: { onClose: () => void, currentPl
 
 function CreateBusinessModal({ onClose, onCreate, currentPlan }: { 
   onClose: () => void, 
-  onCreate: (name: string) => void,
+  onCreate: (businessData: any) => void,
   currentPlan: string
 }) {
-  const [businessName, setBusinessName] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    industry: '',
+    stage: 'Idea',
+    targetMarket: '',
+    businessModel: ''
+  });
   const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!businessName.trim()) {
+    if (!formData.name.trim()) {
       setError('El nombre del negocio es requerido');
       return;
     }
-    onCreate(businessName);
+    if (!formData.description.trim()) {
+      setError('La descripción es requerida');
+      return;
+    }
+    
+    const businessData = {
+      ...formData,
+      foundedDate: new Date().toISOString().split('T')[0],
+      employees: 1,
+      location: 'Chile',
+      website: '',
+      revenue: '$0',
+      keyProducts: [],
+      competitors: [],
+      uniqueValue: '',
+      challenges: [],
+      goals: []
+    };
+    
+    onCreate(businessData);
     onClose();
   };
 
@@ -132,7 +247,7 @@ function CreateBusinessModal({ onClose, onCreate, currentPlan }: {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-dark-surface w-full max-w-md rounded-xl p-6 relative"
+        className="bg-dark-surface w-full max-w-2xl rounded-xl p-6 relative max-h-[90vh] overflow-y-auto"
       >
         <h2 className="text-2xl font-bold mb-4 gradient-text">
           Crear Nuevo Negocio
@@ -146,42 +261,141 @@ function CreateBusinessModal({ onClose, onCreate, currentPlan }: {
           </div>
         )}
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Nombre del Negocio *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                placeholder="Mi Negocio"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Industria
+              </label>
+              <select
+                value={formData.industry}
+                onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+              >
+                <option value="">Seleccionar industria</option>
+                <option value="Tecnología">Tecnología</option>
+                <option value="Alimentación">Alimentación</option>
+                <option value="Retail">Retail</option>
+                <option value="Servicios">Servicios</option>
+                <option value="Salud">Salud</option>
+                <option value="Educación">Educación</option>
+                <option value="Fintech">Fintech</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">
-              Nombre del Negocio
+              Descripción *
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+              placeholder="Describe tu negocio en pocas palabras..."
+              rows={3}
+              required
+            />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Etapa del Negocio
+              </label>
+              <select
+                value={formData.stage}
+                onChange={(e) => setFormData({ ...formData, stage: e.target.value })}
+                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+              >
+                <option value="Idea">Idea</option>
+                <option value="MVP">MVP</option>
+                <option value="Operando">Operando</option>
+                <option value="Crecimiento">Crecimiento</option>
+                <option value="Escalando">Escalando</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Modelo de Negocio
+              </label>
+              <select
+                value={formData.businessModel}
+                onChange={(e) => setFormData({ ...formData, businessModel: e.target.value })}
+                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+              >
+                <option value="">Seleccionar modelo</option>
+                <option value="B2C">B2C - Directo al consumidor</option>
+                <option value="B2B">B2B - Empresa a empresa</option>
+                <option value="SaaS">SaaS - Software como servicio</option>
+                <option value="Marketplace">Marketplace</option>
+                <option value="Suscripción">Suscripción</option>
+                <option value="Freemium">Freemium</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">
+              Mercado Objetivo
             </label>
             <input
               type="text"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
+              value={formData.targetMarket}
+              onChange={(e) => setFormData({ ...formData, targetMarket: e.target.value })}
               className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-              placeholder="Mi Negocio"
+              placeholder="Ej: Profesionales jóvenes, empresas medianas..."
             />
           </div>
-          <button type="submit" className="w-full neon-button">
-            Crear Negocio
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full border border-gray-700 hover:border-neon-blue px-4 py-2 rounded-lg transition-colors"
-          >
-            Cancelar
-          </button>
+
+          <div className="flex space-x-4 pt-4">
+            <button type="submit" className="flex-1 neon-button">
+              Crear Negocio
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 border border-gray-700 hover:border-neon-blue px-4 py-2 rounded-lg transition-colors"
+            >
+              Cancelar
+            </button>
+          </div>
         </form>
       </motion.div>
     </div>
   );
 }
 
-function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: typeof MOCK_USERS.free) => void }) {
+function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: any) => void }) {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
-    username: ''
+    username: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+    country: 'Chile',
+    city: '',
+    industry: '',
+    experience: 'Principiante'
   });
   const [error, setError] = useState('');
 
@@ -208,12 +422,8 @@ function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: ty
         setError('La contraseña debe tener al menos 8 caracteres');
         return;
       }
-      if (!formData.username) {
-        setError('El nombre de usuario es requerido');
-        return;
-      }
-      if (!formData.email) {
-        setError('El email es requerido');
+      if (!formData.username || !formData.firstName || !formData.lastName) {
+        setError('Todos los campos obligatorios deben ser completados');
         return;
       }
       
@@ -224,18 +434,18 @@ function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: ty
         return;
       }
 
-      // Verificar si el nombre de usuario ya está en uso
-      const existingUsername = Object.values(MOCK_USERS).find(u => u.username === formData.username);
-      if (existingUsername) {
-        setError('Este nombre de usuario ya está en uso');
-        return;
-      }
-
       // Crear nuevo usuario con plan gratuito
       const newUser = {
         email: formData.email,
         password: formData.password,
         username: formData.username,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        country: formData.country,
+        city: formData.city,
+        industry: formData.industry,
+        experience: formData.experience,
         plan: 'Gratis',
         businesses: []
       };
@@ -252,7 +462,7 @@ function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: ty
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-dark-surface w-full max-w-md rounded-xl p-6 relative"
+        className="bg-dark-surface w-full max-w-2xl rounded-xl p-6 relative max-h-[90vh] overflow-y-auto"
       >
         <h2 className="text-2xl font-bold mb-6 gradient-text">
           {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
@@ -266,56 +476,80 @@ function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: ty
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Nombre de Usuario
-              </label>
-              <div className="relative">
+            <>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    Nombre *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    placeholder="Juan"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    Apellido *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    placeholder="Pérez"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">
+                  Nombre de Usuario *
+                </label>
                 <input
                   type="text"
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:border-neon-blue transition-colors"
+                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
                   placeholder="usuario123"
                   required
                 />
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               </div>
-            </div>
+            </>
           )}
 
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">
-              Email
+              Email *
             </label>
-            <div className="relative">
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:border-neon-blue transition-colors"
-                placeholder="tu@email.com"
-                required
-              />
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-            </div>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+              placeholder="tu@email.com"
+              required
+            />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">
-              Contraseña
+              Contraseña *
             </label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 pl-10 pr-10 focus:outline-none focus:border-neon-blue transition-colors"
+                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:border-neon-blue transition-colors"
                 placeholder="••••••••"
                 required
                 minLength={8}
               />
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -327,23 +561,88 @@ function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: ty
           </div>
 
           {!isLogin && (
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Confirmar Contraseña
-              </label>
-              <div className="relative">
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">
+                  Confirmar Contraseña *
+                </label>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 pl-10 pr-10 focus:outline-none focus:border-neon-blue transition-colors"
+                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
                   placeholder="••••••••"
                   required
                   minLength={8}
                 />
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               </div>
-            </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    Teléfono
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    placeholder="+56 9 1234 5678"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    Ciudad
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                    placeholder="Santiago"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    Industria
+                  </label>
+                  <select
+                    value={formData.industry}
+                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="Tecnología">Tecnología</option>
+                    <option value="Alimentación">Alimentación</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Servicios">Servicios</option>
+                    <option value="Salud">Salud</option>
+                    <option value="Educación">Educación</option>
+                    <option value="Fintech">Fintech</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    Experiencia
+                  </label>
+                  <select
+                    value={formData.experience}
+                    onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
+                  >
+                    <option value="Principiante">Principiante</option>
+                    <option value="Intermedio">Intermedio</option>
+                    <option value="Avanzado">Avanzado</option>
+                    <option value="Experto">Experto</option>
+                  </select>
+                </div>
+              </div>
+            </>
           )}
 
           <button type="submit" className="w-full neon-button mt-6">
@@ -356,7 +655,19 @@ function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: ty
             onClick={() => {
               setIsLogin(!isLogin);
               setError('');
-              setFormData({ email: '', password: '', confirmPassword: '', username: '' });
+              setFormData({ 
+                email: '', 
+                password: '', 
+                confirmPassword: '', 
+                username: '',
+                firstName: '',
+                lastName: '',
+                phone: '',
+                country: 'Chile',
+                city: '',
+                industry: '',
+                experience: 'Principiante'
+              });
             }}
             className="text-neon-blue hover:text-white transition-colors text-sm"
           >
@@ -378,23 +689,23 @@ function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: ty
 }
 
 function App() {
-  const [showChat, setShowChat] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
-  const [showAIAgent, setShowAIAgent] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<(typeof MOCK_USERS.free & { businesses: string[] }) | null>(null);
+  const [currentUser, setCurrentUser] = useState<any | null>(null);
 
   const handleChatClick = () => {
     if (currentUser) {
-      setShowChat(true);
+      // Usar la misma interfaz de AIAgentInterface para todos
+      return <AIAgentInterface 
+        currentUser={currentUser}
+        selectedBusiness={selectedBusiness}
+        onBusinessChange={setSelectedBusiness}
+        onClose={() => window.location.reload()}
+      />;
     } else {
       setShowAuth(true);
     }
-  };
-
-  const handleAIAgentClick = () => {
-    setShowAIAgent(true);
   };
 
   const handleProfileClick = () => {
@@ -405,8 +716,20 @@ function App() {
     }
   };
 
-  if (showAIAgent) {
-    return <AIAgentInterface />;
+  // Si hay usuario y se hace clic en chat, mostrar AIAgentInterface
+  if (currentUser && showAuth === false && showProfile === false) {
+    const shouldShowChat = new URLSearchParams(window.location.search).get('chat') === 'true';
+    if (shouldShowChat) {
+      return <AIAgentInterface 
+        currentUser={currentUser}
+        selectedBusiness={selectedBusiness}
+        onBusinessChange={setSelectedBusiness}
+        onClose={() => {
+          window.history.replaceState({}, '', window.location.pathname);
+          window.location.reload();
+        }}
+      />;
+    }
   }
 
   if (showProfile && currentUser) {
@@ -415,6 +738,7 @@ function App() {
         user={currentUser}
         onClose={() => setShowProfile(false)}
         onUpdateUser={(updatedUser) => setCurrentUser(updatedUser)}
+        businessProfiles={BUSINESS_PROFILES}
       />
     );
   }
@@ -428,559 +752,280 @@ function App() {
         />
       )}
       
-      {showChat ? (
-        <ChatInterface 
-          onClose={() => setShowChat(false)}
-          selectedBusiness={selectedBusiness}
-          onBusinessChange={setSelectedBusiness}
-          currentUser={currentUser}
-        />
-      ) : (
-        <>
-          {/* Navigation Bar */}
-          {currentUser && (
-            <nav className="fixed top-0 right-0 z-40 p-4">
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={handleProfileClick}
-                  className="flex items-center space-x-2 bg-dark-surface/80 backdrop-blur-sm border border-gray-800 rounded-lg px-4 py-2 hover:border-neon-blue transition-colors"
-                >
-                  <div className="w-6 h-6 rounded-full bg-neon-blue/10 flex items-center justify-center">
-                    <User className="w-4 h-4 text-neon-blue" />
-                  </div>
-                  <span className="text-sm text-white">{currentUser.username}</span>
-                </button>
-              </div>
-            </nav>
-          )}
-
-          {/* Hero Section */}
-          <header className="relative min-h-screen flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,242,254,0.1)_0%,transparent_70%)]" />
-            <div className="container mx-auto px-4 text-center relative z-10">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <h1 className="text-5xl md:text-7xl font-bold mb-6">
-                  <span className="gradient-text">Automatiza y Potencia</span>
-                  <br />
-                  Tu Negocio con IA
-                </h1>
-                <p className="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto">
-                  Pit Exit te ayuda a encontrar fondos, estructurar tu negocio y generar contenido
-                  con inteligencia artificial.
-                </p>
-                <div className="space-x-4">
-                  <button 
-                    className="neon-button"
-                    onClick={handleAIAgentClick}
-                  >
-                    Probar Agente IA <Bot className="inline ml-2 w-5 h-5" />
-                  </button>
-                  <button 
-                    className="border border-gray-700 hover:border-neon-blue px-8 py-3 rounded-lg transition-all duration-300"
-                    onClick={handleChatClick}
-                  >
-                    {currentUser ? 'Chat Básico' : 'Iniciar Sesión'} <ChevronRight className="inline ml-2" />
-                  </button>
-                  {currentUser && (
-                    <div className="inline-flex items-center gap-4 mt-4">
-                      <span className="text-neon-blue">
-                        Plan {currentUser.plan}
-                      </span>
-                      <button 
-                        className="text-gray-400 hover:text-white transition-colors"
-                        onClick={() => setCurrentUser(null)}
-                      >
-                        Cerrar Sesión
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            </div>
-          </header>
-
-          {/* Features Section */}
-          <section className="py-20 bg-dark-surface">
-            <div className="container mx-auto px-4">
-              <h2 className="text-4xl font-bold text-center mb-16">
-                <span className="gradient-text">Beneficios Clave</span>
-              </h2>
-              <div className="grid md:grid-cols-3 gap-8">
-                <FeatureCard
-                  icon={<Rocket className="w-8 h-8 text-neon-blue" />}
-                  title="Encuentra Fondos Públicos"
-                  description="Descubre y postula a fondos que se ajusten perfectamente a tu negocio."
-                />
-                <FeatureCard
-                  icon={<Bot className="w-8 h-8 text-neon-blue" />}
-                  title="Crea tu Propuesta de Valor"
-                  description="Estructura tu modelo de negocio en minutos con ayuda de IA."
-                />
-                <FeatureCard
-                  icon={<MessageSquare className="w-8 h-8 text-neon-blue" />}
-                  title="Genera Contenido"
-                  description="Crea contenido atractivo para redes sociales automáticamente."
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* How it Works Section */}
-          <section className="py-20">
-            <div className="container mx-auto px-4">
-              <h2 className="text-4xl font-bold text-center mb-16">
-                <span className="gradient-text">¿Cómo Funciona?</span>
-              </h2>
-              <div className="grid md:grid-cols-4 gap-8">
-                {[
-                  { step: "1", title: "Describe tu Negocio", icon: <MessageSquare /> },
-                  { step: "2", title: "Descubre Fondos", icon: <Zap /> },
-                  { step: "3", title: "Estructura tu Modelo", icon: <Bot /> },
-                  { step: "4", title: "Genera Contenido", icon: <Rocket /> }
-                ].map((item, index) => (
-                  <div key={index} className="feature-card text-center">
-                    <div className="w-12 h-12 rounded-full bg-neon-blue/10 flex items-center justify-center mx-auto mb-4">
-                      {React.cloneElement(item.icon, { className: "w-6 h-6 text-neon-blue" })}
-                    </div>
-                    <div className="text-2xl font-bold text-neon-blue mb-2">Paso {item.step}</div>
-                    <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Pricing Section */}
-          <section className="py-20 bg-dark-surface">
-            <div className="container mx-auto px-4">
-              <h2 className="text-4xl font-bold text-center mb-4">
-                <span className="gradient-text">Planes y Precios</span>
-              </h2>
-              <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
-                Elige el plan que mejor se adapte a tus necesidades
-              </p>
-              
-              {/* Individual Plans */}
-              <h3 className="text-2xl font-semibold mb-8 text-center">Para Emprendedores</h3>
-              <div className="grid md:grid-cols-4 gap-8 mb-20">
-                <PricingCard
-                  name="Gratis"
-                  price="$0"
-                  icon={<Sparkles />}
-                  features={[
-                    "1 Negocio",
-                    "50 Tokens",
-                    "Acceso a Fondos Públicos",
-                    "Chat con IA"
-                  ]}
-                  highlighted={false}
-                />
-                <PricingCard
-                  name="Básico"
-                  price="$19"
-                  icon={<Bot />}
-                  features={[
-                    "1 Negocio",
-                    "300 Tokens",
-                    "Fondos Públicos",
-                    "Redes Sociales",
-                    "Instagram Automation"
-                  ]}
-                  highlighted={false}
-                />
-                <PricingCard
-                  name="Pro"
-                  price="$49"
-                  icon={<Crown />}
-                  features={[
-                    "3 Negocios",
-                    "700 Tokens",
-                    "Todos los Agentes",
-                    "Prioridad en Soporte",
-                    "Analytics Avanzados"
-                  ]}
-                  highlighted={true}
-                />
-                <PricingCard
-                  name="Premium"
-                  price="$99"
-                  icon={<Trophy />}
-                  features={[
-                    "10 Negocios",
-                    "1500 Tokens",
-                    "Uso Ilimitado",
-                    "Soporte 24/7",
-                    "API Access"
-                  ]}
-                  highlighted={false}
-                />
-              </div>
-
-              {/* Agency Plans */}
-              <h3 className="text-2xl font-semibold mb-8 text-center">Para Agencias</h3>
-              <div className="grid md:grid-cols-3 gap-8">
-                <PricingCard
-                  name="Básica"
-                  price="$49"
-                  icon={<Users />}
-                  features={[
-                    "10 Clientes",
-                    "7000 Tokens",
-                    "Fondos + Redes",
-                    "Dashboard de Clientes",
-                    "Reportes Básicos"
-                  ]}
-                  highlighted={false}
-                />
-                <PricingCard
-                  name="Pro"
-                  price="$99"
-                  icon={<Crown />}
-                  features={[
-                    "50 Clientes",
-                    "20000 Tokens",
-                    "Todos los Agentes",
-                    "Analytics Avanzados",
-                    "API Access"
-                  ]}
-                  highlighted={true}
-                />
-                <PricingCard
-                  name="Premium"
-                  price="$199"
-                  icon={<Trophy />}
-                  features={[
-                    "100 Clientes",
-                    "50000 Tokens",
-                    "Uso Ilimitado",
-                    "Soporte Prioritario",
-                    "White Label"
-                  ]}
-                  highlighted={false}
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* Blog/Resources Section */}
-          <section className="py-20">
-            <div className="container mx-auto px-4">
-              <h2 className="text-4xl font-bold text-center mb-4">
-                <span className="gradient-text">Recursos y Guías</span>
-              </h2>
-              <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
-                Aprende a potenciar tu negocio con nuestros recursos
-              </p>
-              
-              <div className="grid md:grid-cols-3 gap-8">
-                <BlogCard
-                  title="Cómo un emprendedor consiguió financiamiento con Pit Exit"
-                  description="Descubre cómo Juan transformó su startup utilizando nuestra plataforma para obtener fondos públicos."
-                  category="Caso de Éxito"
-                  icon={<Trophy />}
-                  image="https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=800"
-                />
-                <BlogCard
-                  title="Guía para postular a fondos públicos"
-                  description="Aprende los secretos para crear una postulación exitosa y maximizar tus posibilidades de obtener financiamiento."
-                  category="Guía"
-                  icon={<BookOpen />}
-                  image="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800"
-                />
-                <BlogCard
-                  title="Estrategias de IA para redes sociales"
-                  description="Optimiza tu presencia en redes sociales utilizando las últimas tecnologías de inteligencia artificial."
-                  category="Estrategia"
-                  icon={<Lightbulb />}
-                  image="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800"
-                />
-              </div>
-            </div>
-          </section>
-        </>
-      )}
-    </div>
-  );
-}
-
-function ChatInterface({ onClose, selectedBusiness, onBusinessChange, currentUser }: {
-  onClose: () => void;
-  selectedBusiness: string | null;
-  onBusinessChange: (business: string) => void;
-  currentUser: (typeof MOCK_USERS.free & { businesses: string[] }) | null;
-}) {
-  const [messages, setMessages] = useState<Array<{
-    id: number;
-    text: string;
-    sender: 'user' | 'bot';
-    loading?: boolean;
-  }>>([
-    {
-      id: 1,
-      text: "¡Hola! Soy Pit Exit, tu asistente de IA. ¿En qué puedo ayudarte hoy?",
-      sender: 'bot'
-    }
-  ]);
-  const [inputValue, setInputValue] = useState('');
-  const [showBusinessSelector, setShowBusinessSelector] = useState(!selectedBusiness);
-  const [showCreateBusiness, setShowCreateBusiness] = useState(false);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-
-  const handleCreateBusiness = (name: string) => {
-    if (!currentUser) return;
-
-    const businessLimit = BUSINESS_LIMITS[currentUser.plan as keyof typeof BUSINESS_LIMITS];
-    if (currentUser.businesses.length >= businessLimit) {
-      setShowUpgradeModal(true);
-      return;
-    }
-
-    currentUser.businesses.push(name);
-    onBusinessChange(name);
-    setShowBusinessSelector(false);
-  };
-
-  const messagesEndRef = React.useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  React.useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const handleSend = async () => {
-    if (!inputValue.trim()) return;
-
-    const newUserMessage = {
-      id: messages.length + 1,
-      text: inputValue,
-      sender: 'user' as const
-    };
-
-    setMessages(prev => [...prev, newUserMessage]);
-    setInputValue('');
-
-    // Simular respuesta del bot
-    const loadingMessage = {
-      id: messages.length + 2,
-      text: '...',
-      sender: 'bot' as const,
-      loading: true
-    };
-
-    setMessages(prev => [...prev, loadingMessage]);
-
-    // Simular delay y respuesta
-    setTimeout(() => {
-      const botResponse = {
-        id: messages.length + 2,
-        text: getBotResponse(inputValue),
-        sender: 'bot' as const
-      };
-
-      setMessages(prev => prev.map(msg => 
-        msg.id === loadingMessage.id ? botResponse : msg
-      ));
-    }, 1500);
-  };
-
-  const getBotResponse = (input: string) => {
-    const lowerInput = input.toLowerCase();
-    if (lowerInput.includes('fondo') || lowerInput.includes('financiamiento')) {
-      return "Basado en tu descripción, te recomiendo explorar el fondo CORFO Semilla. Este fondo ofrece hasta $25.000.000 para startups innovadoras. ¿Te gustaría conocer más detalles sobre los requisitos?";
-    } else if (lowerInput.includes('modelo') || lowerInput.includes('negocio')) {
-      return "Puedo ayudarte a estructurar tu modelo de negocio usando el Canvas. ¿Empezamos por definir tu propuesta de valor?";
-    } else if (lowerInput.includes('contenido') || lowerInput.includes('redes')) {
-      return "Puedo ayudarte a generar contenido para redes sociales. ¿Para qué plataforma necesitas contenido? Tengo templates optimizados para Instagram, LinkedIn y Twitter.";
-    }
-    return "Cuéntame más sobre tu negocio para poder ayudarte mejor. ¿Qué tipo de ayuda necesitas específicamente?";
-  };
-
-  if (showUpgradeModal) {
-    return (
-      <UpgradeModal
-        onClose={() => setShowUpgradeModal(false)}
-        currentPlan={currentUser?.plan || 'Gratis'}
-      />
-    );
-  }
-
-  if (showCreateBusiness) {
-    return (
-      <CreateBusinessModal
-        onClose={() => setShowCreateBusiness(false)}
-        onCreate={handleCreateBusiness}
-        currentPlan={currentUser?.plan || 'Gratis'}
-      />
-    );
-  }
-
-  if (showBusinessSelector) {
-    return (
-      <div className="fixed inset-0 bg-deep-dark flex items-center justify-center p-4">
-        <div className="bg-dark-surface w-full max-w-2xl rounded-xl p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold gradient-text">Gestionar Negocios</h2>
-            <button 
-              onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              <ArrowLeft />
-            </button>
-          </div>
-
-          {currentUser?.businesses.length === 0 ? (
-            <div className="text-center py-8">
-              <Building className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 mb-6">Aún no tienes negocios creados</p>
-              <button
-                className="neon-button inline-flex items-center"
-                onClick={() => setShowCreateBusiness(true)}
-              >
-                <Plus className="w-5 h-5 mr-2" />
-                Crear Primer Negocio
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="grid gap-4 mb-6">
-                {currentUser?.businesses.map(business => (
-                  <button
-                    key={business}
-                    className="feature-card flex items-center p-4 text-left"
-                    onClick={() => {
-                      onBusinessChange(business);
-                      setShowBusinessSelector(false);
-                    }}
-                  >
-                    <div className="w-12 h-12 rounded-full bg-neon-blue/10 flex items-center justify-center mr-4">
-                      <Building className="w-6 h-6 text-neon-blue" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg">{business}</h3>
-                    </div>
-                  </button>
-                ))}
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-gray-400">
-                  {currentUser?.businesses.length} de {BUSINESS_LIMITS[currentUser?.plan as keyof typeof BUSINESS_LIMITS]} negocios
-                </p>
-                <button
-                  className="neon-button inline-flex items-center"
-                  onClick={() => setShowCreateBusiness(true)}
-                >
-                  <Plus className="w-5 h-5 mr-2" />
-                  Crear Nuevo Negocio
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="fixed inset-0 bg-deep-dark flex flex-col">
-      {/* Chat Header */}
-      <div className="bg-dark-surface p-4 flex items-center justify-between border-b border-gray-800">
-        <div className="flex items-center">
-          <button 
-            onClick={onClose}
-            className="mr-4 text-gray-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft />
-          </button>
-          <div>
-            <h2 className="font-semibold">Chat con Pit Exit</h2>
-            <p className="text-sm text-gray-400">
-              {currentUser?.username} - Plan {currentUser?.plan}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          {selectedBusiness ? (
-            <>
-              <div className="flex items-center gap-2">
-                <Building className="w-4 h-4 text-neon-blue" />
-                <span className="text-neon-blue font-medium">
-                  {selectedBusiness}
-                </span>
-              </div>
-              <button
-                onClick={() => setShowBusinessSelector(true)}
-                className="text-gray-400 hover:text-white transition-colors text-sm"
-              >
-                Cambiar Negocio
-              </button>
-            </>
-          ) : (
+      {/* Navigation Bar */}
+      {currentUser && (
+        <nav className="fixed top-0 right-0 z-40 p-4">
+          <div className="flex items-center space-x-4">
             <button
-              onClick={() => setShowCreateBusiness(true)}
-              className="neon-button inline-flex items-center text-sm py-2"
+              onClick={handleProfileClick}
+              className="flex items-center space-x-2 bg-dark-surface/80 backdrop-blur-sm border border-gray-800 rounded-lg px-4 py-2 hover:border-neon-blue transition-colors"
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Crear Negocio
+              <div className="w-6 h-6 rounded-full bg-neon-blue/10 flex items-center justify-center">
+                <User className="w-4 h-4 text-neon-blue" />
+              </div>
+              <span className="text-sm text-white">{currentUser.username}</span>
             </button>
-          )}
-        </div>
-      </div>
+          </div>
+        </nav>
+      )}
 
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map(message => (
-          <div
-            key={message.id}
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+      {/* Hero Section */}
+      <header className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,242,254,0.1)_0%,transparent_70%)]" />
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <div
-              className={`max-w-[80%] md:max-w-[60%] rounded-lg p-4 ${
-                message.sender === 'user'
-                  ? 'bg-neon-blue text-deep-dark ml-4'
-                  : 'bg-dark-surface border border-gray-800'
-              }`}
-            >
-              {message.loading ? (
-                <div className="flex space-x-2">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              <span className="gradient-text">Automatiza y Potencia</span>
+              <br />
+              Tu Negocio con IA
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto">
+              Pit Exit te ayuda a encontrar fondos, estructurar tu negocio y generar contenido
+              con inteligencia artificial.
+            </p>
+            <div className="space-x-4">
+              <button 
+                className="neon-button"
+                onClick={() => {
+                  if (currentUser) {
+                    window.location.search = '?chat=true';
+                  } else {
+                    setShowAuth(true);
+                  }
+                }}
+              >
+                {currentUser ? 'Abrir Chat IA' : 'Probar Agente IA'} <Bot className="inline ml-2 w-5 h-5" />
+              </button>
+              <button 
+                className="border border-gray-700 hover:border-neon-blue px-8 py-3 rounded-lg transition-all duration-300"
+                onClick={() => {
+                  if (!currentUser) {
+                    setShowAuth(true);
+                  }
+                }}
+              >
+                {currentUser ? 'Bienvenido' : 'Iniciar Sesión'} <ChevronRight className="inline ml-2" />
+              </button>
+              {currentUser && (
+                <div className="inline-flex items-center gap-4 mt-4">
+                  <span className="text-neon-blue">
+                    Plan {currentUser.plan}
+                  </span>
+                  <button 
+                    className="text-gray-400 hover:text-white transition-colors"
+                    onClick={() => setCurrentUser(null)}
+                  >
+                    Cerrar Sesión
+                  </button>
                 </div>
-              ) : (
-                <p>{message.text}</p>
               )}
             </div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Chat Input */}
-      <div className="bg-dark-surface p-4 border-t border-gray-800">
-        <div className="flex items-center space-x-4">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Escribe tu mensaje..."
-            className="flex-1 bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-          />
-          <button
-            onClick={handleSend}
-            className="w-10 h-10 rounded-lg bg-neon-blue text-deep-dark flex items-center justify-center hover:bg-neon-blue/90 transition-colors"
-          >
-            <Send className="w-5 h-5" />
-          </button>
+          </motion.div>
         </div>
-      </div>
+      </header>
+
+      {/* Features Section */}
+      <section className="py-20 bg-dark-surface">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-16">
+            <span className="gradient-text">Beneficios Clave</span>
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <FeatureCard
+              icon={<Rocket className="w-8 h-8 text-neon-blue" />}
+              title="Encuentra Fondos Públicos"
+              description="Descubre y postula a fondos que se ajusten perfectamente a tu negocio."
+            />
+            <FeatureCard
+              icon={<Bot className="w-8 h-8 text-neon-blue" />}
+              title="Crea tu Propuesta de Valor"
+              description="Estructura tu modelo de negocio en minutos con ayuda de IA."
+            />
+            <FeatureCard
+              icon={<MessageSquare className="w-8 h-8 text-neon-blue" />}
+              title="Genera Contenido"
+              description="Crea contenido atractivo para redes sociales automáticamente."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* How it Works Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-16">
+            <span className="gradient-text">¿Cómo Funciona?</span>
+          </h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { step: "1", title: "Describe tu Negocio", icon: <MessageSquare /> },
+              { step: "2", title: "Descubre Fondos", icon: <Zap /> },
+              { step: "3", title: "Estructura tu Modelo", icon: <Bot /> },
+              { step: "4", title: "Genera Contenido", icon: <Rocket /> }
+            ].map((item, index) => (
+              <div key={index} className="feature-card text-center">
+                <div className="w-12 h-12 rounded-full bg-neon-blue/10 flex items-center justify-center mx-auto mb-4">
+                  {React.cloneElement(item.icon, { className: "w-6 h-6 text-neon-blue" })}
+                </div>
+                <div className="text-2xl font-bold text-neon-blue mb-2">Paso {item.step}</div>
+                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-20 bg-dark-surface">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-4">
+            <span className="gradient-text">Planes y Precios</span>
+          </h2>
+          <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
+            Elige el plan que mejor se adapte a tus necesidades
+          </p>
+          
+          {/* Individual Plans */}
+          <h3 className="text-2xl font-semibold mb-8 text-center">Para Emprendedores</h3>
+          <div className="grid md:grid-cols-4 gap-8 mb-20">
+            <PricingCard
+              name="Gratis"
+              price="$0"
+              icon={<Sparkles />}
+              features={[
+                "1 Negocio",
+                "50 Tokens",
+                "Acceso a Fondos Públicos",
+                "Chat con IA"
+              ]}
+              highlighted={false}
+            />
+            <PricingCard
+              name="Básico"
+              price="$19"
+              icon={<Bot />}
+              features={[
+                "1 Negocio",
+                "300 Tokens",
+                "Fondos Públicos",
+                "Redes Sociales",
+                "Instagram Automation"
+              ]}
+              highlighted={false}
+            />
+            <PricingCard
+              name="Pro"
+              price="$49"
+              icon={<Crown />}
+              features={[
+                "3 Negocios",
+                "700 Tokens",
+                "Todos los Agentes",
+                "Prioridad en Soporte",
+                "Analytics Avanzados"
+              ]}
+              highlighted={true}
+            />
+            <PricingCard
+              name="Premium"
+              price="$99"
+              icon={<Trophy />}
+              features={[
+                "10 Negocios",
+                "1500 Tokens",
+                "Uso Ilimitado",
+                "Soporte 24/7",
+                "API Access"
+              ]}
+              highlighted={false}
+            />
+          </div>
+
+          {/* Agency Plans */}
+          <h3 className="text-2xl font-semibold mb-8 text-center">Para Agencias</h3>
+          <div className="grid md:grid-cols-3 gap-8">
+            <PricingCard
+              name="Básica"
+              price="$49"
+              icon={<Users />}
+              features={[
+                "10 Clientes",
+                "7000 Tokens",
+                "Fondos + Redes",
+                "Dashboard de Clientes",
+                "Reportes Básicos"
+              ]}
+              highlighted={false}
+            />
+            <PricingCard
+              name="Pro"
+              price="$99"
+              icon={<Crown />}
+              features={[
+                "50 Clientes",
+                "20000 Tokens",
+                "Todos los Agentes",
+                "Analytics Avanzados",
+                "API Access"
+              ]}
+              highlighted={true}
+            />
+            <PricingCard
+              name="Premium"
+              price="$199"
+              icon={<Trophy />}
+              features={[
+                "100 Clientes",
+                "50000 Tokens",
+                "Uso Ilimitado",
+                "Soporte Prioritario",
+                "White Label"
+              ]}
+              highlighted={false}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Blog/Resources Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-4">
+            <span className="gradient-text">Recursos y Guías</span>
+          </h2>
+          <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
+            Aprende a potenciar tu negocio con nuestros recursos
+          </p>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <BlogCard
+              title="Cómo un emprendedor consiguió financiamiento con Pit Exit"
+              description="Descubre cómo Juan transformó su startup utilizando nuestra plataforma para obtener fondos públicos."
+              category="Caso de Éxito"
+              icon={<Trophy />}
+              image="https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=800"
+            />
+            <BlogCard
+              title="Guía para postular a fondos públicos"
+              description="Aprende los secretos para crear una postulación exitosa y maximizar tus posibilidades de obtener financiamiento."
+              category="Guía"
+              icon={<BookOpen />}
+              image="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800"
+            />
+            <BlogCard
+              title="Estrategias de IA para redes sociales"
+              description="Optimiza tu presencia en redes sociales utilizando las últimas tecnologías de inteligencia artificial."
+              category="Estrategia"
+              icon={<Lightbulb />}
+              image="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800"
+            />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
