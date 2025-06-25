@@ -13,10 +13,7 @@ import {
   Maximize2,
   Minimize2,
   RefreshCw,
-  Zap,
-  Building,
-  Plus,
-  ArrowLeft
+  Zap
 } from 'lucide-react';
 
 interface Message {
@@ -38,13 +35,6 @@ interface AgentResult {
     readingTime?: string;
     tags?: string[];
   };
-}
-
-interface AIAgentInterfaceProps {
-  currentUser?: any;
-  selectedBusiness?: string | null;
-  onBusinessChange?: (business: string) => void;
-  onClose?: () => void;
 }
 
 const AGENT_RESPONSES = {
@@ -235,104 +225,11 @@ Con Pit Exit, nuestra IA analiza tu perfil y te conecta automáticamente con los
   }
 };
 
-function BusinessSelector({ 
-  currentUser, 
-  selectedBusiness, 
-  onBusinessChange, 
-  onCreateBusiness 
-}: {
-  currentUser: any;
-  selectedBusiness: string | null;
-  onBusinessChange: (business: string) => void;
-  onCreateBusiness: () => void;
-}) {
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  if (!currentUser) return null;
-
-  return (
-    <div className="relative">
-      <button
-        onClick={() => setShowDropdown(!showDropdown)}
-        className="flex items-center space-x-2 bg-dark-surface/80 backdrop-blur-sm border border-gray-800 rounded-lg px-4 py-2 hover:border-neon-blue transition-colors"
-      >
-        <Building className="w-4 h-4 text-neon-blue" />
-        <span className="text-sm text-white">
-          {selectedBusiness || 'Seleccionar Negocio'}
-        </span>
-        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-
-      {showDropdown && (
-        <div className="absolute top-full right-0 mt-2 w-64 bg-dark-surface border border-gray-800 rounded-lg shadow-xl z-50">
-          <div className="p-2">
-            {currentUser.businesses.length === 0 ? (
-              <div className="text-center py-4">
-                <p className="text-gray-400 text-sm mb-3">No tienes negocios creados</p>
-                <button
-                  onClick={() => {
-                    onCreateBusiness();
-                    setShowDropdown(false);
-                  }}
-                  className="text-neon-blue hover:text-white text-sm flex items-center justify-center space-x-1"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Crear Negocio</span>
-                </button>
-              </div>
-            ) : (
-              <>
-                {currentUser.businesses.map((business: string) => (
-                  <button
-                    key={business}
-                    onClick={() => {
-                      onBusinessChange(business);
-                      setShowDropdown(false);
-                    }}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      selectedBusiness === business
-                        ? 'bg-neon-blue/10 text-neon-blue'
-                        : 'text-gray-300 hover:bg-gray-800'
-                    }`}
-                  >
-                    {business}
-                  </button>
-                ))}
-                <div className="border-t border-gray-800 mt-2 pt-2">
-                  <button
-                    onClick={() => {
-                      onCreateBusiness();
-                      setShowDropdown(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-neon-blue hover:bg-gray-800 transition-colors flex items-center space-x-2"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Crear Nuevo Negocio</span>
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default function AIAgentInterface({ 
-  currentUser, 
-  selectedBusiness, 
-  onBusinessChange, 
-  onClose 
-}: AIAgentInterfaceProps) {
+export default function AIAgentInterface() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: currentUser 
-        ? `¡Hola ${currentUser.firstName || currentUser.username}! Soy tu agente de IA especializado en emprendimiento. Puedo ayudarte a encontrar fondos, crear tu modelo de negocio o generar contenido para redes sociales. ¿En qué te gustaría que te ayude?`
-        : "¡Hola! Soy tu agente de IA especializado en emprendimiento. Puedo ayudarte a encontrar fondos, crear tu modelo de negocio o generar contenido para redes sociales. ¿En qué te gustaría que te ayude?",
+      text: "¡Hola! Soy tu agente de IA especializado en emprendimiento. Puedo ayudarte a encontrar fondos, crear tu modelo de negocio o generar contenido para redes sociales. ¿En qué te gustaría que te ayude?",
       sender: 'bot',
       timestamp: new Date()
     }
@@ -343,7 +240,6 @@ export default function AIAgentInterface({
   const [currentResult, setCurrentResult] = useState<AgentResult | null>(null);
   const [isResultMaximized, setIsResultMaximized] = useState(false);
   const [copiedText, setCopiedText] = useState(false);
-  const [showCreateBusiness, setShowCreateBusiness] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -433,126 +329,16 @@ export default function AIAgentInterface({
     }
   };
 
-  const handleCreateBusiness = (businessData: any) => {
-    if (currentUser && onBusinessChange) {
-      // Agregar el negocio al usuario actual
-      currentUser.businesses.push(businessData.name);
-      onBusinessChange(businessData.name);
-    }
-  };
-
   return (
     <div className="h-screen bg-deep-dark flex overflow-hidden">
-      {/* Create Business Modal */}
-      {showCreateBusiness && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-dark-surface w-full max-w-2xl rounded-xl p-6 relative max-h-[90vh] overflow-y-auto"
-          >
-            <h2 className="text-2xl font-bold mb-4 gradient-text">
-              Crear Nuevo Negocio
-            </h2>
-            <p className="text-gray-400 mb-6">
-              Plan actual: {currentUser?.plan || 'Gratis'}
-            </p>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.target as HTMLFormElement);
-              const businessData = {
-                name: formData.get('name') as string,
-                description: formData.get('description') as string,
-                industry: formData.get('industry') as string,
-                stage: formData.get('stage') as string,
-                targetMarket: formData.get('targetMarket') as string,
-                businessModel: formData.get('businessModel') as string
-              };
-              handleCreateBusiness(businessData);
-              setShowCreateBusiness(false);
-            }} className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Nombre del Negocio *
-                  </label>
-                  <input
-                    name="name"
-                    type="text"
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                    placeholder="Mi Negocio"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Industria
-                  </label>
-                  <select
-                    name="industry"
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  >
-                    <option value="">Seleccionar industria</option>
-                    <option value="Tecnología">Tecnología</option>
-                    <option value="Alimentación">Alimentación</option>
-                    <option value="Retail">Retail</option>
-                    <option value="Servicios">Servicios</option>
-                    <option value="Salud">Salud</option>
-                    <option value="Educación">Educación</option>
-                    <option value="Fintech">Fintech</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Otro">Otro</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Descripción *
-                </label>
-                <textarea
-                  name="description"
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  placeholder="Describe tu negocio en pocas palabras..."
-                  rows={3}
-                  required
-                />
-              </div>
-
-              <div className="flex space-x-4 pt-4">
-                <button type="submit" className="flex-1 neon-button">
-                  Crear Negocio
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowCreateBusiness(false)}
-                  className="flex-1 border border-gray-700 hover:border-neon-blue px-4 py-2 rounded-lg transition-colors"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        </div>
-      )}
-
       {/* Chat Section */}
       <div className={`transition-all duration-500 ease-in-out ${
         showResult && !isResultMaximized ? 'w-1/2' : 'w-full'
       } flex flex-col h-full`}>
         {/* Chat Header */}
         <div className="bg-dark-surface p-6 border-b border-gray-800 flex-shrink-0">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center">
             <div className="flex items-center space-x-3">
-              {onClose && (
-                <button
-                  onClick={onClose}
-                  className="text-gray-400 hover:text-white transition-colors mr-2"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-              )}
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-neon-blue to-blue-500 flex items-center justify-center">
                 <Bot className="w-6 h-6 text-white" />
               </div>
@@ -561,16 +347,6 @@ export default function AIAgentInterface({
                 <p className="text-sm text-gray-400">Especialista en Emprendimiento</p>
               </div>
             </div>
-            
-            {/* Business Selector */}
-            {currentUser && (
-              <BusinessSelector
-                currentUser={currentUser}
-                selectedBusiness={selectedBusiness || null}
-                onBusinessChange={onBusinessChange || (() => {})}
-                onCreateBusiness={() => setShowCreateBusiness(true)}
-              />
-            )}
           </div>
         </div>
 
@@ -661,10 +437,7 @@ export default function AIAgentInterface({
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder={selectedBusiness 
-                    ? `Pregúntame sobre ${selectedBusiness}...` 
-                    : "Pregúntame sobre fondos, modelos de negocio o contenido..."
-                  }
+                  placeholder="Pregúntame sobre fondos, modelos de negocio o contenido..."
                   className="w-full bg-deep-dark border border-gray-800 rounded-xl px-6 py-4 pr-12 focus:outline-none focus:border-neon-blue transition-colors text-white placeholder-gray-400"
                 />
                 <button
