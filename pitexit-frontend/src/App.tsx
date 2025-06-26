@@ -6,13 +6,10 @@ import UserProfile from './components/UserProfile';
 
 // Límites de negocios por plan
 const BUSINESS_LIMITS = {
-  'Gratis': 1,
-  'Básico': 1,
-  'Pro': 3,
-  'Premium': 10,
-  'Agencia Básica': 10,
-  'Agencia Pro': 50,
-  'Agencia Premium': 100
+  'Pitexit Go-Kart': 1,
+  'Pitexit F3': 3,
+  'Pitexit F2': 10,
+  'Pitexit F1': 100
 };
 
 // Usuarios ficticios para cada plan con más campos
@@ -28,13 +25,13 @@ const MOCK_USERS = {
     city: 'Santiago',
     industry: 'Tecnología',
     experience: 'Principiante',
-    plan: 'Gratis',
+    plan: 'Pitexit Go-Kart',
     businesses: []
   },
-  basic: {
-    email: 'basic@example.com',
+  f3: {
+    email: 'f3@example.com',
     password: 'password123',
-    username: 'emprendedor_basic',
+    username: 'emprendedor_f3',
     firstName: 'María',
     lastName: 'González',
     phone: '+56 9 8765 4321',
@@ -42,13 +39,13 @@ const MOCK_USERS = {
     city: 'Valparaíso',
     industry: 'Alimentación',
     experience: 'Intermedio',
-    plan: 'Básico',
+    plan: 'Pitexit F3',
     businesses: ['Café Artesanal']
   },
-  pro: {
-    email: 'pro@example.com',
+  f2: {
+    email: 'f2@example.com',
     password: 'password123',
-    username: 'emprendedor_pro',
+    username: 'emprendedor_f2',
     firstName: 'Carlos',
     lastName: 'Rodríguez',
     phone: '+56 9 5555 1234',
@@ -56,13 +53,13 @@ const MOCK_USERS = {
     city: 'Concepción',
     industry: 'Tecnología',
     experience: 'Avanzado',
-    plan: 'Pro',
+    plan: 'Pitexit F2',
     businesses: ['TechStart', 'EcoShop', 'Digital Marketing']
   },
-  premium: {
-    email: 'premium@example.com',
+  f1: {
+    email: 'f1@example.com',
     password: 'password123',
-    username: 'emprendedor_premium',
+    username: 'emprendedor_f1',
     firstName: 'Ana',
     lastName: 'Silva',
     phone: '+56 9 9999 8888',
@@ -70,50 +67,8 @@ const MOCK_USERS = {
     city: 'La Serena',
     industry: 'Consultoría',
     experience: 'Experto',
-    plan: 'Premium',
+    plan: 'Pitexit F1',
     businesses: ['Café Artesanal', 'TechStart', 'EcoShop', 'Digital Agency']
-  },
-  agencyBasic: {
-    email: 'agency.basic@example.com',
-    password: 'password123',
-    username: 'agencia_basic',
-    firstName: 'Roberto',
-    lastName: 'Martínez',
-    phone: '+56 9 7777 6666',
-    country: 'Chile',
-    city: 'Antofagasta',
-    industry: 'Marketing',
-    experience: 'Avanzado',
-    plan: 'Agencia Básica',
-    businesses: ['Cliente 1', 'Cliente 2', 'Cliente 3']
-  },
-  agencyPro: {
-    email: 'agency.pro@example.com',
-    password: 'password123',
-    username: 'agencia_pro',
-    firstName: 'Patricia',
-    lastName: 'López',
-    phone: '+56 9 4444 3333',
-    country: 'Chile',
-    city: 'Temuco',
-    industry: 'Marketing',
-    experience: 'Experto',
-    plan: 'Agencia Pro',
-    businesses: ['Cliente 1', 'Cliente 2', 'Cliente 3', 'Cliente 4']
-  },
-  agencyPremium: {
-    email: 'agency.premium@example.com',
-    password: 'password123',
-    username: 'agencia_premium',
-    firstName: 'Diego',
-    lastName: 'Morales',
-    phone: '+56 9 2222 1111',
-    country: 'Chile',
-    city: 'Iquique',
-    industry: 'Marketing',
-    experience: 'Experto',
-    plan: 'Agencia Premium',
-    businesses: ['Cliente 1', 'Cliente 2', 'Cliente 3', 'Cliente 4', 'Cliente 5']
   }
 };
 
@@ -159,11 +114,9 @@ const BUSINESS_PROFILES = {
 
 function UpgradeModal({ onClose, currentPlan }: { onClose: () => void, currentPlan: string }) {
   const nextPlan = {
-    'Gratis': 'Básico',
-    'Básico': 'Pro',
-    'Pro': 'Premium',
-    'Agencia Básica': 'Agencia Pro',
-    'Agencia Pro': 'Agencia Premium'
+    'Pitexit Go-Kart': 'Pitexit F3',
+    'Pitexit F3': 'Pitexit F2',
+    'Pitexit F2': 'Pitexit F1'
   }[currentPlan];
 
   return (
@@ -446,7 +399,7 @@ function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: an
         city: formData.city,
         industry: formData.industry,
         experience: formData.experience,
-        plan: 'Gratis',
+        plan: 'Pitexit Go-Kart',
         businesses: []
       };
 
@@ -880,107 +833,88 @@ function App() {
           <h2 className="text-4xl font-bold text-center mb-4">
             <span className="gradient-text">Planes y Precios</span>
           </h2>
-          <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
-            Elige el plan que mejor se adapte a tus necesidades
+          <p className="text-xl text-gray-400 text-center mb-16 max-w-3xl mx-auto">
+            Nuestros planes están diseñados para impulsar tu estrategia y crecimiento, desde tus primeros pasos hasta la gestión de múltiples negocios.
           </p>
           
-          {/* Individual Plans */}
-          <h3 className="text-2xl font-semibold mb-8 text-center">Para Emprendedores</h3>
-          <div className="grid md:grid-cols-4 gap-8 mb-20">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <PricingCard
-              name="Gratis"
-              price="$0"
+              name="Pitexit Go-Kart"
+              subtitle="El Fundamento del Éxito"
+              price="Gratis"
               icon={<Sparkles />}
               features={[
                 "1 Negocio",
-                "50 Tokens",
-                "Acceso a Fondos Públicos",
-                "Chat con IA"
+                "1 Hack de Valor / mes",
+                "1 Tipo de Contenido / mes",
+                "Asesoría IA básica",
+                "Plan de Trabajo Básico (3 etapas, 5 tareas)",
+                "Dashboard personal",
+                "Historial de chat básico",
+                "20-30 interacciones IA / mes",
+                "Acceso a comunidad"
               ]}
               highlighted={false}
+              buttonText="Empezar Ahora Gratis"
             />
             <PricingCard
-              name="Básico"
-              price="$19"
-              icon={<Bot />}
-              features={[
-                "1 Negocio",
-                "300 Tokens",
-                "Fondos Públicos",
-                "Redes Sociales",
-                "Instagram Automation"
-              ]}
-              highlighted={false}
-            />
-            <PricingCard
-              name="Pro"
+              name="Pitexit F3"
+              subtitle="Tu Impulso Estratégico"
               price="$49"
-              icon={<Crown />}
+              icon={<Zap />}
               features={[
-                "3 Negocios",
-                "700 Tokens",
-                "Todos los Agentes",
-                "Prioridad en Soporte",
-                "Analytics Avanzados"
+                "Hasta 3 Negocios",
+                "Hacks de Valor Ilimitados",
+                "Contenido Ilimitado (Reels, Carruseles, Historias, Copy, LinkedIn)",
+                "Metodologías Avanzadas IA",
+                "Framework de Innovación",
+                "Modelos de Negocio",
+                "Planes de Trabajo Completos",
+                "Dashboard avanzado",
+                "500-1000 interacciones IA / mes",
+                "Soporte por email"
               ]}
               highlighted={true}
+              buttonText="Acelerar mi Estrategia"
             />
             <PricingCard
-              name="Premium"
-              price="$99"
-              icon={<Trophy />}
-              features={[
-                "10 Negocios",
-                "1500 Tokens",
-                "Uso Ilimitado",
-                "Soporte 24/7",
-                "API Access"
-              ]}
-              highlighted={false}
-            />
-          </div>
-
-          {/* Agency Plans */}
-          <h3 className="text-2xl font-semibold mb-8 text-center">Para Agencias</h3>
-          <div className="grid md:grid-cols-3 gap-8">
-            <PricingCard
-              name="Básica"
-              price="$49"
-              icon={<Users />}
-              features={[
-                "10 Clientes",
-                "7000 Tokens",
-                "Fondos + Redes",
-                "Dashboard de Clientes",
-                "Reportes Básicos"
-              ]}
-              highlighted={false}
-            />
-            <PricingCard
-              name="Pro"
-              price="$99"
-              icon={<Crown />}
-              features={[
-                "50 Clientes",
-                "20000 Tokens",
-                "Todos los Agentes",
-                "Analytics Avanzados",
-                "API Access"
-              ]}
-              highlighted={true}
-            />
-            <PricingCard
-              name="Premium"
+              name="Pitexit F2"
+              subtitle="El Motor Acelerado"
               price="$199"
-              icon={<Trophy />}
+              icon={<Crown />}
               features={[
-                "100 Clientes",
-                "50000 Tokens",
-                "Uso Ilimitado",
-                "Soporte Prioritario",
-                "White Label"
+                "Hasta 10 Negocios",
+                "Hacks de Valor Ilimitados",
+                "Generación Ilimitada de Contenido",
+                "Análisis EVD Profundo con IA",
+                "Planes de Trabajo Completos",
+                "Dashboard Avanzado",
+                "Reportes agregados",
+                "Comparativas entre negocios",
+                "Interacciones IA muy altas/ilimitadas",
+                "Soporte prioritario, chat en vivo"
               ]}
               highlighted={false}
+              buttonText="Optimizar mis Negocios"
+            />
+            <PricingCard
+              name="Pitexit F1"
+              subtitle="La Cumbre del Rendimiento"
+              price="Consultar"
+              icon={<Trophy />}
+              features={[
+                "Grandes Volúmenes a Medida",
+                "Múltiples Negocios (límites muy altos)",
+                "Funcionalidades IA Ilimitadas",
+                "Soporte Dedicado 24/7 y SLA",
+                "Personalización Extrema",
+                "Integraciones Avanzadas (CRMs, E-commerce)",
+                "Ajuste Fino del Agente IA",
+                "Desarrollo de características personalizadas",
+                "Adaptación a requerimientos específicos"
+              ]}
+              highlighted={false}
+              buttonText="Contactar Ventas F1"
             />
           </div>
         </div>
@@ -1039,12 +973,14 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
   );
 }
 
-function PricingCard({ name, price, icon, features, highlighted }: { 
-  name: string, 
+function PricingCard({ name, subtitle, price, icon, features, highlighted, buttonText }: { 
+  name: string,
+  subtitle: string,
   price: string, 
   icon: React.ReactNode,
   features: string[],
-  highlighted: boolean 
+  highlighted: boolean,
+  buttonText: string
 }) {
   return (
     <motion.div
@@ -1064,18 +1000,22 @@ function PricingCard({ name, price, icon, features, highlighted }: {
           {React.cloneElement(icon as any, { className: "w-8 h-8 text-neon-blue" })}
         </div>
         <h3 className="text-2xl font-bold mb-1">{name}</h3>
-        <div className="text-3xl font-bold text-neon-blue mb-4">{price}<span className="text-sm text-gray-400">/mes</span></div>
+        <p className="text-sm text-gray-400 mb-3">{subtitle}</p>
+        <div className="text-3xl font-bold text-neon-blue mb-4">
+          {price}
+          {price !== 'Gratis' && price !== 'Consultar' && <span className="text-sm text-gray-400">/mes</span>}
+        </div>
       </div>
-      <ul className="space-y-3">
+      <ul className="space-y-3 mb-6">
         {features.map((feature, index) => (
-          <li key={index} className="flex items-center">
-            <Check className="w-5 h-5 text-neon-blue mr-2" />
-            <span className="text-gray-300">{feature}</span>
+          <li key={index} className="flex items-start">
+            <Check className="w-4 h-4 text-neon-blue mr-2 mt-0.5 flex-shrink-0" />
+            <span className="text-gray-300 text-sm">{feature}</span>
           </li>
         ))}
       </ul>
-      <button className={`w-full mt-6 ${highlighted ? 'neon-button' : 'border border-gray-700 hover:border-neon-blue px-8 py-3 rounded-lg transition-all duration-300'}`}>
-        Empezar Ahora
+      <button className={`w-full ${highlighted ? 'neon-button' : 'border border-gray-700 hover:border-neon-blue px-8 py-3 rounded-lg transition-all duration-300'}`}>
+        {buttonText}
       </button>
     </motion.div>
   );
