@@ -1,655 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, Rocket, MessageSquare, Zap, ChevronRight, Check, Users, Sparkles, Crown, BookOpen, Trophy, Lightbulb, Send, Building, ArrowLeft, Mail, Lock, Eye, EyeOff, User, Plus } from 'lucide-react';
+import { Bot, Rocket, MessageSquare, Zap, ChevronRight, Check, Users, Sparkles, Crown, BookOpen, Trophy, Lightbulb, User } from 'lucide-react';
 import AIAgentInterface from './components/AIAgentInterface';
 import UserProfile from './components/UserProfile';
-
-// Límites de negocios por plan
-const BUSINESS_LIMITS = {
-  'Pitexit Go-Kart': 1,
-  'Pitexit F3': 3,
-  'Pitexit F2': 10,
-  'Pitexit F1': 100
-};
-
-// Usuarios ficticios para cada plan con más campos
-const MOCK_USERS = {
-  free: {
-    email: 'free@example.com',
-    password: 'password123',
-    username: 'emprendedor_free',
-    firstName: 'Juan',
-    lastName: 'Pérez',
-    phone: '+56 9 1234 5678',
-    country: 'Chile',
-    city: 'Santiago',
-    industry: 'Tecnología',
-    experience: 'Principiante',
-    plan: 'Pitexit Go-Kart',
-    businesses: []
-  },
-  f3: {
-    email: 'f3@example.com',
-    password: 'password123',
-    username: 'emprendedor_f3',
-    firstName: 'María',
-    lastName: 'González',
-    phone: '+56 9 8765 4321',
-    country: 'Chile',
-    city: 'Valparaíso',
-    industry: 'Alimentación',
-    experience: 'Intermedio',
-    plan: 'Pitexit F3',
-    businesses: ['Café Artesanal']
-  },
-  f2: {
-    email: 'f2@example.com',
-    password: 'password123',
-    username: 'emprendedor_f2',
-    firstName: 'Carlos',
-    lastName: 'Rodríguez',
-    phone: '+56 9 5555 1234',
-    country: 'Chile',
-    city: 'Concepción',
-    industry: 'Tecnología',
-    experience: 'Avanzado',
-    plan: 'Pitexit F2',
-    businesses: ['TechStart', 'EcoShop', 'Digital Marketing']
-  },
-  f1: {
-    email: 'f1@example.com',
-    password: 'password123',
-    username: 'emprendedor_f1',
-    firstName: 'Ana',
-    lastName: 'Silva',
-    phone: '+56 9 9999 8888',
-    country: 'Chile',
-    city: 'La Serena',
-    industry: 'Consultoría',
-    experience: 'Experto',
-    plan: 'Pitexit F1',
-    businesses: ['Café Artesanal', 'TechStart', 'EcoShop', 'Digital Agency']
-  }
-};
-
-// Perfiles detallados de negocios
-const BUSINESS_PROFILES = {
-  'Café Artesanal': {
-    name: 'Café Artesanal',
-    description: 'Cafetería especializada en café de origen único y métodos de preparación artesanales',
-    industry: 'Alimentación y Bebidas',
-    stage: 'Operando',
-    foundedDate: '2023-01-15',
-    employees: 5,
-    location: 'Santiago, Chile',
-    website: 'www.cafeartesanal.cl',
-    revenue: '$15.000.000',
-    targetMarket: 'Amantes del café premium, profesionales urbanos',
-    businessModel: 'B2C - Venta directa y suscripciones',
-    keyProducts: ['Café de origen', 'Métodos de preparación', 'Cursos de barista'],
-    competitors: ['Starbucks', 'Juan Valdez', 'Café Altura'],
-    uniqueValue: 'Experiencia completa del café desde el grano hasta la taza',
-    challenges: ['Competencia con grandes cadenas', 'Costos de importación', 'Educación del mercado'],
-    goals: ['Expandir a 3 sucursales', 'Lanzar línea de productos retail', 'Certificación orgánica']
-  },
-  'TechStart': {
-    name: 'TechStart',
-    description: 'Plataforma SaaS para gestión de proyectos con IA integrada',
-    industry: 'Tecnología',
-    stage: 'MVP',
-    foundedDate: '2024-03-01',
-    employees: 3,
-    location: 'Santiago, Chile',
-    website: 'www.techstart.cl',
-    revenue: '$2.000.000',
-    targetMarket: 'Equipos de desarrollo, startups, empresas medianas',
-    businessModel: 'SaaS - Suscripción mensual',
-    keyProducts: ['Gestión de proyectos', 'IA para estimaciones', 'Analytics avanzados'],
-    competitors: ['Jira', 'Asana', 'Monday.com'],
-    uniqueValue: 'IA que predice retrasos y optimiza recursos automáticamente',
-    challenges: ['Competencia establecida', 'Adquisición de usuarios', 'Desarrollo de IA'],
-    goals: ['100 usuarios pagos', 'Ronda de inversión Serie A', 'Expansión regional']
-  }
-};
-
-function UpgradeModal({ onClose, currentPlan }: { onClose: () => void, currentPlan: string }) {
-  const nextPlan = {
-    'Pitexit Go-Kart': 'Pitexit F3',
-    'Pitexit F3': 'Pitexit F2',
-    'Pitexit F2': 'Pitexit F1'
-  }[currentPlan];
-
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-dark-surface w-full max-w-md rounded-xl p-6 relative"
-      >
-        <h2 className="text-2xl font-bold mb-4 gradient-text">
-          Aumenta tu límite de negocios
-        </h2>
-        <p className="text-gray-400 mb-6">
-          Has alcanzado el límite de negocios para tu plan actual ({currentPlan}). 
-          Actualiza al plan {nextPlan} para crear más negocios y acceder a más funcionalidades.
-        </p>
-        <div className="space-y-4">
-          <button className="w-full neon-button">
-            Actualizar a {nextPlan}
-          </button>
-          <button 
-            onClick={onClose}
-            className="w-full border border-gray-700 hover:border-neon-blue px-4 py-2 rounded-lg transition-colors"
-          >
-            Cancelar
-          </button>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-function CreateBusinessModal({ onClose, onCreate, currentPlan }: { 
-  onClose: () => void, 
-  onCreate: (businessData: any) => void,
-  currentPlan: string
-}) {
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    industry: '',
-    stage: 'Idea',
-    targetMarket: '',
-    businessModel: ''
-  });
-  const [error, setError] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name.trim()) {
-      setError('El nombre del negocio es requerido');
-      return;
-    }
-    if (!formData.description.trim()) {
-      setError('La descripción es requerida');
-      return;
-    }
-    
-    const businessData = {
-      ...formData,
-      foundedDate: new Date().toISOString().split('T')[0],
-      employees: 1,
-      location: 'Chile',
-      website: '',
-      revenue: '$0',
-      keyProducts: [],
-      competitors: [],
-      uniqueValue: '',
-      challenges: [],
-      goals: []
-    };
-    
-    onCreate(businessData);
-    onClose();
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-dark-surface w-full max-w-2xl rounded-xl p-6 relative max-h-[90vh] overflow-y-auto"
-      >
-        <h2 className="text-2xl font-bold mb-4 gradient-text">
-          Crear Nuevo Negocio
-        </h2>
-        <p className="text-gray-400 mb-6">
-          Plan actual: {currentPlan}
-        </p>
-        {error && (
-          <div className="mb-4 p-3 bg-red-500/10 border border-red-500 rounded-lg text-red-500 text-sm">
-            {error}
-          </div>
-        )}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Nombre del Negocio *
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                placeholder="Mi Negocio"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Industria
-              </label>
-              <select
-                value={formData.industry}
-                onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-              >
-                <option value="">Seleccionar industria</option>
-                <option value="Tecnología">Tecnología</option>
-                <option value="Alimentación">Alimentación</option>
-                <option value="Retail">Retail</option>
-                <option value="Servicios">Servicios</option>
-                <option value="Salud">Salud</option>
-                <option value="Educación">Educación</option>
-                <option value="Fintech">Fintech</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Otro">Otro</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
-              Descripción *
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-              placeholder="Describe tu negocio en pocas palabras..."
-              rows={3}
-              required
-            />
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Etapa del Negocio
-              </label>
-              <select
-                value={formData.stage}
-                onChange={(e) => setFormData({ ...formData, stage: e.target.value })}
-                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-              >
-                <option value="Idea">Idea</option>
-                <option value="MVP">MVP</option>
-                <option value="Operando">Operando</option>
-                <option value="Crecimiento">Crecimiento</option>
-                <option value="Escalando">Escalando</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">
-                Modelo de Negocio
-              </label>
-              <select
-                value={formData.businessModel}
-                onChange={(e) => setFormData({ ...formData, businessModel: e.target.value })}
-                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-              >
-                <option value="">Seleccionar modelo</option>
-                <option value="B2C">B2C - Directo al consumidor</option>
-                <option value="B2B">B2B - Empresa a empresa</option>
-                <option value="SaaS">SaaS - Software como servicio</option>
-                <option value="Marketplace">Marketplace</option>
-                <option value="Suscripción">Suscripción</option>
-                <option value="Freemium">Freemium</option>
-                <option value="Otro">Otro</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
-              Mercado Objetivo
-            </label>
-            <input
-              type="text"
-              value={formData.targetMarket}
-              onChange={(e) => setFormData({ ...formData, targetMarket: e.target.value })}
-              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-              placeholder="Ej: Profesionales jóvenes, empresas medianas..."
-            />
-          </div>
-
-          <div className="flex space-x-4 pt-4">
-            <button type="submit" className="flex-1 neon-button">
-              Crear Negocio
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 border border-gray-700 hover:border-neon-blue px-4 py-2 rounded-lg transition-colors"
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
-      </motion.div>
-    </div>
-  );
-}
-
-function AuthModal({ onClose, onAuth }: { onClose: () => void, onAuth: (user: any) => void }) {
-  const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    username: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    country: 'Chile',
-    city: '',
-    industry: '',
-    experience: 'Principiante'
-  });
-  const [error, setError] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (isLogin) {
-      // Simulación de inicio de sesión
-      const user = Object.values(MOCK_USERS).find(u => u.email === formData.email && u.password === formData.password);
-      if (user) {
-        onAuth(user);
-        onClose();
-      } else {
-        setError('Email o contraseña incorrectos');
-      }
-    } else {
-      // Validaciones de registro
-      if (formData.password !== formData.confirmPassword) {
-        setError('Las contraseñas no coinciden');
-        return;
-      }
-      if (formData.password.length < 8) {
-        setError('La contraseña debe tener al menos 8 caracteres');
-        return;
-      }
-      if (!formData.username || !formData.firstName || !formData.lastName) {
-        setError('Todos los campos obligatorios deben ser completados');
-        return;
-      }
-      
-      // Verificar si el email ya está en uso
-      const existingUser = Object.values(MOCK_USERS).find(u => u.email === formData.email);
-      if (existingUser) {
-        setError('Este email ya está registrado');
-        return;
-      }
-
-      // Crear nuevo usuario con plan gratuito
-      const newUser = {
-        email: formData.email,
-        password: formData.password,
-        username: formData.username,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phone: formData.phone,
-        country: formData.country,
-        city: formData.city,
-        industry: formData.industry,
-        experience: formData.experience,
-        plan: 'Pitexit Go-Kart',
-        businesses: []
-      };
-
-      // Simular registro exitoso
-      onAuth(newUser);
-      onClose();
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-dark-surface w-full max-w-2xl rounded-xl p-6 relative max-h-[90vh] overflow-y-auto"
-      >
-        <h2 className="text-2xl font-bold mb-6 gradient-text">
-          {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
-        </h2>
-        
-        {error && (
-          <div className="mb-4 p-3 bg-red-500/10 border border-red-500 rounded-lg text-red-500 text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Nombre *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.firstName}
-                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                    placeholder="Juan"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Apellido *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.lastName}
-                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                    placeholder="Pérez"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Nombre de Usuario *
-                </label>
-                <input
-                  type="text"
-                  value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  placeholder="usuario123"
-                  required
-                />
-              </div>
-            </>
-          )}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
-              Email *
-            </label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-              placeholder="tu@email.com"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
-              Contraseña *
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:border-neon-blue transition-colors"
-                placeholder="••••••••"
-                required
-                minLength={8}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          {!isLogin && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Confirmar Contraseña *
-                </label>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  placeholder="••••••••"
-                  required
-                  minLength={8}
-                />
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Teléfono
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                    placeholder="+56 9 1234 5678"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Ciudad
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                    placeholder="Santiago"
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Industria
-                  </label>
-                  <select
-                    value={formData.industry}
-                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  >
-                    <option value="">Seleccionar</option>
-                    <option value="Tecnología">Tecnología</option>
-                    <option value="Alimentación">Alimentación</option>
-                    <option value="Retail">Retail</option>
-                    <option value="Servicios">Servicios</option>
-                    <option value="Salud">Salud</option>
-                    <option value="Educación">Educación</option>
-                    <option value="Fintech">Fintech</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Otro">Otro</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Experiencia
-                  </label>
-                  <select
-                    value={formData.experience}
-                    onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  >
-                    <option value="Principiante">Principiante</option>
-                    <option value="Intermedio">Intermedio</option>
-                    <option value="Avanzado">Avanzado</option>
-                    <option value="Experto">Experto</option>
-                  </select>
-                </div>
-              </div>
-            </>
-          )}
-
-          <button type="submit" className="w-full neon-button mt-6">
-            {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
-          </button>
-        </form>
-
-        <div className="mt-4 text-center">
-          <button
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setError('');
-              setFormData({ 
-                email: '', 
-                password: '', 
-                confirmPassword: '', 
-                username: '',
-                firstName: '',
-                lastName: '',
-                phone: '',
-                country: 'Chile',
-                city: '',
-                industry: '',
-                experience: 'Principiante'
-              });
-            }}
-            className="text-neon-blue hover:text-white transition-colors text-sm"
-          >
-            {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
-          </button>
-        </div>
-
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </motion.div>
-    </div>
-  );
-}
+import AuthModal from './components/AuthModal';
+import { useAuth } from './hooks/useAuth';
+import { useBusinesses } from './hooks/useBusinesses';
 
 function App() {
+  const { user, userProfile, loading: authLoading, signOut } = useAuth();
+  const { businesses } = useBusinesses();
   const [showAuth, setShowAuth] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showPlayground, setShowPlayground] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<any | null>(null);
 
   const handlePlaygroundClick = () => {
-    if (currentUser) {
+    if (userProfile) {
       setShowPlayground(true);
     } else {
       setShowAuth(true);
@@ -657,7 +24,7 @@ function App() {
   };
 
   const handleProfileClick = () => {
-    if (currentUser) {
+    if (userProfile) {
       setShowProfile(true);
     } else {
       setShowAuth(true);
@@ -671,11 +38,12 @@ function App() {
   };
 
   // Mostrar Playground
-  if (showPlayground && currentUser) {
+  if (showPlayground && userProfile) {
     return (
       <AIAgentInterface 
-        currentUser={currentUser}
+        currentUser={userProfile}
         selectedBusiness={selectedBusiness}
+        businesses={businesses}
         onBusinessChange={setSelectedBusiness}
         onClose={() => setShowPlayground(false)}
       />
@@ -683,13 +51,12 @@ function App() {
   }
 
   // Mostrar Perfil
-  if (showProfile && currentUser) {
+  if (showProfile && userProfile) {
     return (
       <UserProfile 
-        user={currentUser}
+        user={userProfile}
+        businesses={businesses}
         onClose={() => setShowProfile(false)}
-        onUpdateUser={(updatedUser) => setCurrentUser(updatedUser)}
-        businessProfiles={BUSINESS_PROFILES}
         onNavigateToPlayground={handleNavigateToPlayground}
       />
     );
@@ -700,12 +67,11 @@ function App() {
       {showAuth && (
         <AuthModal 
           onClose={() => setShowAuth(false)} 
-          onAuth={(user) => setCurrentUser(user)}
         />
       )}
       
       {/* Navigation Bar */}
-      {currentUser && (
+      {userProfile && (
         <nav className="fixed top-0 right-0 z-40 p-4">
           <div className="flex items-center space-x-4">
             <button
@@ -715,7 +81,7 @@ function App() {
               <div className="w-6 h-6 rounded-full bg-neon-blue/10 flex items-center justify-center">
                 <User className="w-4 h-4 text-neon-blue" />
               </div>
-              <span className="text-sm text-white">{currentUser.username}</span>
+              <span className="text-sm text-white">{userProfile.username}</span>
             </button>
           </div>
         </nav>
@@ -744,28 +110,28 @@ function App() {
                 className="neon-button"
                 onClick={handlePlaygroundClick}
               >
-                {currentUser ? 'Abrir Playground' : 'Probar Playground'} <Bot className="inline ml-2 w-5 h-5" />
+                {userProfile ? 'Abrir Playground' : 'Probar Playground'} <Bot className="inline ml-2 w-5 h-5" />
               </button>
               <button 
                 className="border border-gray-700 hover:border-neon-blue px-8 py-3 rounded-lg transition-all duration-300"
                 onClick={() => {
-                  if (!currentUser) {
+                  if (!userProfile) {
                     setShowAuth(true);
                   } else {
                     handleProfileClick();
                   }
                 }}
               >
-                {currentUser ? 'Mi Perfil' : 'Iniciar Sesión'} <ChevronRight className="inline ml-2" />
+                {userProfile ? 'Mi Perfil' : 'Iniciar Sesión'} <ChevronRight className="inline ml-2" />
               </button>
-              {currentUser && (
+              {userProfile && (
                 <div className="inline-flex items-center gap-4 mt-4">
                   <span className="text-neon-blue">
-                    Plan {currentUser.plan}
+                    Plan {userProfile.plan}
                   </span>
                   <button 
                     className="text-gray-400 hover:text-white transition-colors"
-                    onClick={() => setCurrentUser(null)}
+                    onClick={signOut}
                   >
                     Cerrar Sesión
                   </button>
