@@ -1,6 +1,3 @@
-Here's the fixed version with all missing closing brackets added:
-
-```jsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, X } from 'lucide-react';
@@ -306,4 +303,3 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     </div>
   );
 }
-```
