@@ -35,6 +35,7 @@ export function useAuth() {
   }, []);
 
   const fetchUserProfile = async (authUserId: string) => {
+    console.log('🔍 Fetching user profile for authUserId:', authUserId);
     try {
       const { data, error } = await supabase
         .from('users')
@@ -42,29 +43,43 @@ export function useAuth() {
         .eq('auth_user_id', authUserId)
         .single();
 
+      console.log('📊 Profile query result:', { data, error });
+
       if (error) {
         console.error('Error fetching user profile:', error);
         // Si no existe el perfil, crearlo
         if (error.code === 'PGRST116') {
+          console.log('👤 Profile not found, creating new profile...');
           await createUserProfile(authUserId);
           return;
         }
+        // Para otros errores, también intentar crear el perfil
+        console.log('⚠️ Other error, attempting to create profile anyway...');
+        await createUserProfile(authUserId);
       } else {
+        console.log('✅ Profile found successfully:', data);
         setUserProfile(data);
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
+      console.log('🔄 Attempting to create profile due to catch error...');
+      await createUserProfile(authUserId);
     } finally {
       setLoading(false);
     }
   };
 
   const createUserProfile = async (authUserId: string) => {
+    console.log('🆕 Creating user profile for authUserId:', authUserId);
     try {
       const { data: authUser } = await supabase.auth.getUser();
+      console.log('👤 Auth user data:', authUser);
+      
       if (!authUser.user) return;
 
       const username = authUser.user.email?.split('@')[0] + Math.floor(Math.random() * 1000);
+      console.log('📝 Creating profile with username:', username);
       
       const { data, error } = await supabase
         .from('users')
@@ -84,9 +99,12 @@ export function useAuth() {
         .select()
         .single();
 
+      console.log('💾 Profile creation result:', { data, error });
+
       if (error) {
         console.error('Error creating user profile:', error);
       } else {
+        console.log('✅ Profile created successfully:', data);
         setUserProfile(data);
       }
     } catch (error) {

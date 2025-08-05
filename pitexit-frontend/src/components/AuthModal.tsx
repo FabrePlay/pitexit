@@ -29,13 +29,16 @@ export default function AuthModal({ onClose }: AuthModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    console.log('🔐 Starting authentication process...');
 
     if (isLogin) {
+      console.log('📧 Attempting login with email:', formData.email);
       const { error } = await signIn(formData.email, formData.password);
       if (error) {
         console.error('Login error:', error);
         setError(error.message || 'Error al iniciar sesión');
       } else {
+        console.log('✅ Login successful');
         onClose();
       }
     } else {
