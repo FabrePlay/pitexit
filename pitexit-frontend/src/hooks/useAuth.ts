@@ -39,7 +39,7 @@ export function useAuth() {
     try {
       // Agregar timeout para evitar que se cuelgue
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout: Profile fetch took too long')), 10000);
+        setTimeout(() => reject(new Error('Timeout: Profile fetch took too long')), 20000);
       });
 
       const fetchPromise = supabase
