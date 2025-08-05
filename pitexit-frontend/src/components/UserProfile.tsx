@@ -708,10 +708,10 @@ export default function UserProfile({
                     <h3 className="text-lg font-semibold mb-4">Actividad Reciente</h3>
                     <div className="space-y-3">
                       {[
-                        { action: 'Fondo encontrado', business: user.businesses[0] || 'Mi Negocio', time: '2 horas' },
-                        { action: 'Contenido generado', business: user.businesses[0] || 'Mi Negocio', time: '1 día' },
-                        { action: 'Modelo de negocio creado', business: user.businesses[1] || 'Otro Negocio', time: '3 días' },
-                        { action: 'Análisis completado', business: user.businesses[0] || 'Mi Negocio', time: '5 días' }
+                        { action: 'Fondo encontrado', business: user.businesses?.[0] || 'Mi Negocio', time: '2 horas' },
+                        { action: 'Contenido generado', business: user.businesses?.[0] || 'Mi Negocio', time: '1 día' },
+                        { action: 'Modelo de negocio creado', business: user.businesses?.[1] || 'Otro Negocio', time: '3 días' },
+                        { action: 'Análisis completado', business: user.businesses?.[0] || 'Mi Negocio', time: '5 días' }
                       ].map((activity, index) => (
                         <div key={index} className="flex items-center justify-between py-2 border-b border-gray-800 last:border-b-0">
                           <div>
