@@ -33,13 +33,21 @@ export default function AuthModal({ onClose }: AuthModalProps) {
 
     if (isLogin) {
       console.log('📧 Attempting login with email:', formData.email);
+      
+      try {
       const { error } = await signIn(formData.email, formData.password);
+        console.log('🔑 Login result:', { error });
+        
       if (error) {
         console.error('Login error:', error);
         setError(error.message || 'Error al iniciar sesión');
       } else {
         console.log('✅ Login successful');
         onClose();
+      }
+      } catch (err) {
+        console.error('💥 Login catch error:', err);
+        setError('Error inesperado al iniciar sesión');
       }
     } else {
       // Validaciones de registro

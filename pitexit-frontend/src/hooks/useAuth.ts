@@ -37,13 +37,20 @@ export function useAuth() {
   const fetchUserProfile = async (authUserId: string) => {
     console.log('🔍 Fetching user profile for authUserId:', authUserId);
     try {
-      const { data, error } = await supabase
+      // Agregar timeout para evitar que se cuelgue
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout: Profile fetch took too long')), 10000);
+      });
+
+      const fetchPromise = supabase
         .from('users')
         .select('*')
         .eq('auth_user_id', authUserId)
         .single();
 
-      console.log('📊 Profile query result:', { data, error });
+      console.log('📡 Starting Supabase query...');
+      const { data, error } = await Promise.race([fetchPromise, timeoutPromise]) as any;
+      console.log('📊 Profile query completed:', { data, error });
 
       if (error) {
         console.error('Error fetching user profile:', error);
@@ -59,13 +66,13 @@ export function useAuth() {
       } else {
         console.log('✅ Profile found successfully:', data);
         setUserProfile(data);
-        setLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error('💥 Catch block - Error fetching user profile:', error);
       console.log('🔄 Attempting to create profile due to catch error...');
       await createUserProfile(authUserId);
     } finally {
+      console.log('🏁 fetchUserProfile finally block executed');
       setLoading(false);
     }
   };
