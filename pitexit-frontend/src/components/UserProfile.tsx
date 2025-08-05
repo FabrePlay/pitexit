@@ -190,7 +190,7 @@ export default function UserProfile({
         
         // Verificar si el userProfile se actualizó
         setTimeout(() => {
-          console.log('👤 UserProfile after update:', userProfile);
+          console.log('👤 User after update:', user);
         }, 1000);
         
         alert('✅ Perfil actualizado correctamente');
