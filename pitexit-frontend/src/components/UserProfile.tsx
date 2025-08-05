@@ -152,7 +152,7 @@ export default function UserProfile({
     return {
       totalTokensUsed: Math.floor(planInfo.tokens * usagePercentage),
       totalTokensAvailable: planInfo.tokens,
-      businessesCreated: user.businesses.length,
+      businessesCreated: user.businesses?.length || 0,
       maxBusinesses: planInfo.businesses,
       fundsFound: Math.floor(Math.random() * 15) + 3,
       contentGenerated: Math.floor(Math.random() * 50) + 10,
@@ -619,11 +619,10 @@ export default function UserProfile({
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold">Mis Negocios</h2>
                   <div className="text-sm text-gray-400">
-                    {user.businesses.length} de {planInfo.businesses} negocios
+                    {user.businesses?.length || 0} de {planInfo.businesses} negocios
                   </div>
                 </div>
 
-                {user.businesses.length === 0 ? (
                   <div className="feature-card text-center py-12">
                     <Building className="w-16 h-16 text-gray-600 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No tienes negocios creados</h3>
@@ -635,7 +634,7 @@ export default function UserProfile({
                   </div>
                 ) : (
                   <div className="grid md:grid-cols-2 gap-6">
-                    {user.businesses.map((business, index) => {
+                    {(user.businesses || []).map((business, index) => {
                       const businessProfile = businessProfiles?.[business];
                       return (
                         <div key={index} className="feature-card">
@@ -693,7 +692,7 @@ export default function UserProfile({
                       );
                     })}
                     
-                    {user.businesses.length < planInfo.businesses && (
+                    {(user.businesses?.length || 0) < planInfo.businesses && (
                       <div className="feature-card border-dashed border-gray-600 flex items-center justify-center py-12">
                         <button className="text-center">
                           <Plus className="w-8 h-8 text-gray-600 mx-auto mb-2" />
