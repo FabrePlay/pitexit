@@ -449,7 +449,7 @@ function BusinessSelector({
       {showDropdown && (
         <div className="absolute top-full right-0 mt-2 w-64 bg-dark-surface border border-gray-800 rounded-lg shadow-xl z-50">
           <div className="p-2">
-            {currentUser.businesses.length === 0 ? (
+            {(currentUser.businesses?.length || 0) === 0 ? (
               <div className="text-center py-4">
                 <p className="text-gray-400 text-sm mb-3">No tienes negocios creados</p>
                 <button
@@ -465,7 +465,7 @@ function BusinessSelector({
               </div>
             ) : (
               <>
-                {currentUser.businesses.map((business: string) => (
+                {(currentUser.businesses || []).map((business: string) => (
                   <button
                     key={business}
                     onClick={() => {
