@@ -622,7 +622,7 @@ export default function UserProfile({
                     {user.businesses?.length || 0} de {planInfo.businesses} negocios
                   </div>
                 </div>
-
+                {(user.businesses?.length || 0) === 0 ? (
                   <div className="feature-card text-center py-12">
                     <Building className="w-16 h-16 text-gray-600 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No tienes negocios creados</h3>
