@@ -159,8 +159,6 @@ export default function UserProfile({
 
   const stats = getStatsForPlan(user.plan);
   const planInfo = PLAN_FEATURES[user.plan as keyof typeof PLAN_FEATURES];
-
-  const handleSaveProfile = () => {
     const updatesToSend = {
       username: editForm.username,
       first_name: editForm.firstName,
@@ -173,28 +171,27 @@ export default function UserProfile({
 
     console.log('Saving profile updates:', updatesToSend);
     
-    onUpdateUser(updatesToSend).then(result => {
+    try {
+      const result = await onUpdateUser(updatesToSend);
+      console.log('Update result:', result);
+      
       if (result.error) {
         console.error('Error updating profile:', result.error);
         alert('Error al guardar los cambios: ' + result.error.message);
       } else {
         console.log('Profile updated successfully:', result.data);
         alert('Perfil actualizado correctamente');
+        setIsEditing(false);
       }
-    }).catch(error => {
-      console.error('Error updating profile:', error);
+    } catch (error) {
+      console.error('Unexpected error updating profile:', error);
       alert('Error inesperado al guardar los cambios');
-    });
-    
-    setIsEditing(false);
+    }
   };
 
   const handleDeleteBusiness = (businessName: string) => {
-    const updatedUser = {
-      ...user,
-      businesses: user.businesses.filter(b => b !== businessName)
-    };
-    onUpdateUser(updatedUser);
+    // Esta función necesita ser implementada con la lógica de eliminación de negocios
+    console.log('Delete business:', businessName);
   };
 
   const tabs = [
