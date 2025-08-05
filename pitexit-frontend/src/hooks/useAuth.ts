@@ -59,17 +59,6 @@ export function useAuth() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: {
-            username: userData.username,
-            first_name: userData.first_name,
-            last_name: userData.last_name,
-            phone: userData.phone,
-            city: userData.city,
-            industry: userData.industry,
-            experience: userData.experience,
-          }
-        }
       });
 
       if (error) throw error;
