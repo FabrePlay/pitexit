@@ -307,9 +307,6 @@ export default function UserProfile({
                             city: user.city || '',
                             industry: user.industry || '',
                             experience: user.experience || 'Principiante',
-                            currentPassword: '',
-                            newPassword: '',
-                            confirmPassword: ''
                           });
                         }}
                         className="border border-gray-700 hover:border-red-500 px-4 py-2 rounded-lg transition-colors"
