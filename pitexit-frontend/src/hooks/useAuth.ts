@@ -6,6 +6,7 @@ export function useAuth() {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fetchingProfile, setFetchingProfile] = useState(false);
 
   useEffect(() => {
     // Get initial session
@@ -35,45 +36,52 @@ export function useAuth() {
   }, []);
 
   const fetchUserProfile = async (authUserId: string) => {
+    // Evitar múltiples llamadas simultáneas
+    if (fetchingProfile) {
+      console.log('🚫 Profile fetch already in progress, skipping...');
+      return;
+    }
+    
+    setFetchingProfile(true);
     console.log('🔍 Fetching user profile for authUserId:', authUserId);
+    
     try {
-      // Agregar timeout para evitar que se cuelgue
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout: Profile fetch took too long')), 20000);
-      });
-
-      const fetchPromise = supabase
+      console.log('📡 Starting Supabase query...');
+      
+      // Consulta simple sin timeout por ahora
+      const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('auth_user_id', authUserId)
         .single();
 
-      console.log('📡 Starting Supabase query...');
-      const { data, error } = await Promise.race([fetchPromise, timeoutPromise]) as any;
       console.log('📊 Profile query completed:', { data, error });
 
       if (error) {
         console.error('Error fetching user profile:', error);
-        // Si no existe el perfil, crearlo
         if (error.code === 'PGRST116') {
           console.log('👤 Profile not found, creating new profile...');
           await createUserProfile(authUserId);
           return;
         }
-        // Para otros errores, también intentar crear el perfil
-        console.log('⚠️ Other error, attempting to create profile anyway...');
-        await createUserProfile(authUserId);
+        throw error;
       } else {
         console.log('✅ Profile found successfully:', data);
         setUserProfile(data);
       }
     } catch (error) {
       console.error('💥 Catch block - Error fetching user profile:', error);
-      console.log('🔄 Attempting to create profile due to catch error...');
-      await createUserProfile(authUserId);
+      // Solo crear perfil si es un error de "no encontrado"
+      if (error.code === 'PGRST116' || error.message?.includes('No rows')) {
+        console.log('🔄 Attempting to create profile due to not found error...');
+        await createUserProfile(authUserId);
+      } else {
+        console.log('❌ Other error, setting loading to false without profile');
+        setLoading(false);
+      }
     } finally {
       console.log('🏁 fetchUserProfile finally block executed');
-      setLoading(false);
+      setFetchingProfile(false);
     }
   };
 
@@ -110,13 +118,14 @@ export function useAuth() {
 
       if (error) {
         console.error('Error creating user profile:', error);
+        setLoading(false);
       } else {
         console.log('✅ Profile created successfully:', data);
         setUserProfile(data);
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error creating user profile:', error);
-    } finally {
       setLoading(false);
     }
   };
