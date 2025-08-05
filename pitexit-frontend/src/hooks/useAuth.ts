@@ -212,11 +212,17 @@ export function useAuth() {
   const updateProfile = async (updates: Partial<User>) => {
     console.log('🔧 useAuth.updateProfile called with:', updates);
     console.log('👤 Current userProfile in hook:', userProfile);
+    console.log('🆔 UserProfile ID for update:', userProfile?.id);
+    console.log('📧 UserProfile email for reference:', userProfile?.email);
     
     if (!userProfile) return { error: new Error('No user profile found') };
 
     try {
-      console.log('📡 Calling Supabase update...');
+      console.log('📡 Calling Supabase update with:');
+      console.log('  - Table: users');
+      console.log('  - Updates object:', JSON.stringify(updates, null, 2));
+      console.log('  - Where condition: id =', userProfile.id);
+      
       const { data, error } = await supabase
         .from('users')
         .update(updates)
@@ -224,17 +230,27 @@ export function useAuth() {
         .select()
         .single();
 
-      console.log('📥 Supabase response:', { data, error });
+      console.log('📥 Supabase response received:');
+      console.log('  - Data:', data);
+      console.log('  - Error:', error);
+      console.log('  - Data type:', typeof data);
+      console.log('  - Error type:', typeof error);
       
       if (error) throw error;
       
-      console.log('🔄 Setting new userProfile state:', data);
+      console.log('🔄 About to set new userProfile state with:', data);
+      console.log('🔄 Previous userProfile state was:', userProfile);
       setUserProfile(data);
       
-      console.log('✅ userProfile state should be updated');
+      console.log('✅ setUserProfile called successfully');
       return { data, error: null };
     } catch (error) {
-      console.error('💥 Error in updateProfile:', error);
+      console.error('💥 Error in updateProfile:');
+      console.error('  - Error object:', error);
+      console.error('  - Error message:', error.message);
+      console.error('  - Error details:', error.details);
+      console.error('  - Error hint:', error.hint);
+      console.error('  - Error code:', error.code);
       return { data: null, error };
     }
   };
