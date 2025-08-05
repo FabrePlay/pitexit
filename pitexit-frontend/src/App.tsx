@@ -59,6 +59,7 @@ function App() {
       <UserProfile 
         user={userProfile}
         businesses={businesses}
+        onUpdateUser={updateProfile}
         onClose={() => setShowProfile(false)}
         onNavigateToPlayground={handleNavigateToPlayground}
       />
