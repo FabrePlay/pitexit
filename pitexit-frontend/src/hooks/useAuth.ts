@@ -142,7 +142,8 @@ export function useAuth() {
           city: '',
           industry: '',
           experience: 'Principiante',
-          plan: 'Gratis'
+          plan: 'Gratis',
+          businesses: []
         }])
         .select()
         .single();
