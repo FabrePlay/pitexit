@@ -8,7 +8,7 @@ import { useAuth } from './hooks/useAuth';
 import { useBusinesses } from './hooks/useBusinesses';
 
 function App() {
-  const { user, userProfile, loading: authLoading, signOut } = useAuth();
+  const { user, userProfile, loading: authLoading, signOut, updateProfile } = useAuth();
   const { businesses } = useBusinesses();
   const [showAuth, setShowAuth] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
