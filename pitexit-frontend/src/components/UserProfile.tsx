@@ -159,6 +159,8 @@ export default function UserProfile({
 
   const stats = getStatsForPlan(user.plan);
   const planInfo = PLAN_FEATURES[user.plan as keyof typeof PLAN_FEATURES];
+
+  const handleSaveProfile = async () => {
     const updatesToSend = {
       username: editForm.username,
       first_name: editForm.firstName,
