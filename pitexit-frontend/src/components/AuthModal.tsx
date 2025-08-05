@@ -47,19 +47,18 @@ export default function AuthModal({ onClose }: AuthModalProps) {
         setError('La contraseña debe tener al menos 8 caracteres');
         return;
       }
-      if (!formData.username || !formData.first_name || !formData.last_name) {
-        setError('Todos los campos obligatorios deben ser completados');
-        return;
-      }
+      
+      // Generar username automático basado en email
+      const autoUsername = formData.email.split('@')[0] + Math.floor(Math.random() * 1000);
       
       const { error } = await signUp(formData.email, formData.password, {
-        username: formData.username,
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        phone: formData.phone,
-        city: formData.city,
-        industry: formData.industry,
-        experience: formData.experience,
+        username: autoUsername,
+        first_name: '',
+        last_name: '',
+        phone: '',
+        city: '',
+        industry: '',
+        experience: 'Principiante',
       });
       
       if (error) {
@@ -89,53 +88,6 @@ export default function AuthModal({ onClose }: AuthModalProps) {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Nombre *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.first_name}
-                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                    placeholder="Juan"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Apellido *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.last_name}
-                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                    placeholder="Pérez"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  Nombre de Usuario *
-                </label>
-                <input
-                  type="text"
-                  value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  placeholder="usuario123"
-                  required
-                />
-              </div>
-            </>
-          )}
-
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">
               Email *
@@ -189,72 +141,6 @@ export default function AuthModal({ onClose }: AuthModalProps) {
                   required
                   minLength={8}
                 />
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Teléfono
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                    placeholder="+56 9 1234 5678"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Ciudad
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                    placeholder="Santiago"
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Industria
-                  </label>
-                  <select
-                    value={formData.industry}
-                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  >
-                    <option value="">Seleccionar</option>
-                    <option value="Tecnología">Tecnología</option>
-                    <option value="Alimentación">Alimentación</option>
-                    <option value="Retail">Retail</option>
-                    <option value="Servicios">Servicios</option>
-                    <option value="Salud">Salud</option>
-                    <option value="Educación">Educación</option>
-                    <option value="Fintech">Fintech</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Otro">Otro</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">
-                    Experiencia
-                  </label>
-                  <select
-                    value={formData.experience}
-                    onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                    className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                  >
-                    <option value="Principiante">Principiante</option>
-                    <option value="Intermedio">Intermedio</option>
-                    <option value="Avanzado">Avanzado</option>
-                    <option value="Experto">Experto</option>
-                  </select>
-                </div>
               </div>
             </>
           )}
