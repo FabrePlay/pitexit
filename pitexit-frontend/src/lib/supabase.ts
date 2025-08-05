@@ -8,6 +8,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+console.log('🔧 Supabase client initialized:', supabaseUrl ? 'URL loaded' : 'URL missing', supabaseAnonKey ? 'Anon Key loaded' : 'Anon Key missing');
+console.log('🔧 Supabase URL:', supabaseUrl);
+console.log('🔧 Supabase Anon Key (first 20 chars):', supabaseAnonKey ? supabaseAnonKey.substring(0, 20) + '...' : 'missing');
 
 // Types for our database schema
 export interface User {

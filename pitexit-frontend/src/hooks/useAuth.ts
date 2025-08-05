@@ -47,6 +47,8 @@ export function useAuth() {
     
     try {
       console.log('📡 Starting Supabase query...');
+      console.log('🔍 Attempting to query users table with auth_user_id:', authUserId);
+      console.log('🔍 Supabase client status:', supabase ? 'initialized' : 'not initialized');
       
       // Consulta simple sin timeout por ahora
       const { data, error } = await supabase
@@ -55,6 +57,7 @@ export function useAuth() {
         .eq('auth_user_id', authUserId)
         .single();
 
+      console.log('✅ Supabase query completed successfully');
       console.log('📊 Profile query completed:', { data, error });
 
       if (error) {
