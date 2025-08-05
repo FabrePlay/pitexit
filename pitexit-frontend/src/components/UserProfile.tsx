@@ -163,7 +163,7 @@ export default function UserProfile({
   const handleSaveProfile = async () => {
     console.log('🔄 Starting profile save process...');
     console.log('📝 Current editForm data:', editForm);
-    console.log('👤 Current userProfile:', userProfile);
+    console.log('👤 Current userProfile (from prop):', user);
     
     const updatesToSend = {
       username: editForm.username,
