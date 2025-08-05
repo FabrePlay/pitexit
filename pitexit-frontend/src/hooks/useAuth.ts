@@ -232,6 +232,7 @@ export function useAuth() {
 
       console.log('📥 Supabase response received:');
       console.log('  - Data:', data);
+      console.log('  - Data content (detailed):', JSON.stringify(data, null, 2));
       console.log('  - Error:', error);
       console.log('  - Data type:', typeof data);
       console.log('  - Error type:', typeof error);
