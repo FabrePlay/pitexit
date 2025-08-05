@@ -133,9 +133,6 @@ export default function UserProfile({
     city: user.city || '',
     industry: user.industry || '',
     experience: user.experience || 'Principiante',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
   });
   const [notifications, setNotifications] = useState({
     emailUpdates: true,
@@ -164,28 +161,7 @@ export default function UserProfile({
   const planInfo = PLAN_FEATURES[user.plan as keyof typeof PLAN_FEATURES];
 
   const handleSaveProfile = () => {
-    // Validaciones
-    if (editForm.newPassword && editForm.newPassword !== editForm.confirmPassword) {
-      alert('Las contraseñas no coinciden');
-      return;
-    }
-
-    // Actualizar usuario
-    const updatedUser = {
-      ...user,
-      username: editForm.username,
-      email: editForm.email,
-      firstName: editForm.firstName,
-      lastName: editForm.lastName,
-      phone: editForm.phone,
-      city: editForm.city,
-      industry: editForm.industry,
-      experience: editForm.experience,
-      ...(editForm.newPassword && { password: editForm.newPassword })
-    };
-
-    // Only update fields that are part of the User interface and have changed
-    const updatesToSend: Partial<User> = {
+    const updatesToSend = {
       username: editForm.username,
       first_name: editForm.firstName,
       last_name: editForm.lastName,
@@ -195,23 +171,22 @@ export default function UserProfile({
       experience: editForm.experience,
     };
 
-    // If email changed, update it via auth.updateUser
-    if (editForm.email !== user.email) {
-      // This would typically involve supabase.auth.updateUser({ email: editForm.email })
-      // For now, we'll just update the profile table
-      updatesToSend.email = editForm.email;
-    }
-
-    // If new password is provided, update it via auth.updateUser
-    if (editForm.newPassword) {
-      // This would typically involve supabase.auth.updateUser({ password: editForm.newPassword })
-      // For now, we'll just log it
-      console.log("Password change requested, but not implemented via Supabase Auth yet.");
-    }
-
-    onUpdateUser(updatesToSend);
+    console.log('Saving profile updates:', updatesToSend);
+    
+    onUpdateUser(updatesToSend).then(result => {
+      if (result.error) {
+        console.error('Error updating profile:', result.error);
+        alert('Error al guardar los cambios: ' + result.error.message);
+      } else {
+        console.log('Profile updated successfully:', result.data);
+        alert('Perfil actualizado correctamente');
+      }
+    }).catch(error => {
+      console.error('Error updating profile:', error);
+      alert('Error inesperado al guardar los cambios');
+    });
+    
     setIsEditing(false);
-    setEditForm({ ...editForm, currentPassword: '', newPassword: '', confirmPassword: '' });
   };
 
   const handleDeleteBusiness = (businessName: string) => {
@@ -499,58 +474,6 @@ export default function UserProfile({
                       )}
                     </div>
                   </div>
-
-                  {isEditing && (
-                    <div className="border-t border-gray-800 pt-6">
-                      <h3 className="text-lg font-semibold mb-4">Cambiar Contraseña</h3>
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-400 mb-2">
-                            Contraseña Actual
-                          </label>
-                          <div className="relative">
-                            <input
-                              type={showPassword ? 'text' : 'password'}
-                              value={editForm.currentPassword}
-                              onChange={(e) => setEditForm({ ...editForm, currentPassword: e.target.value })}
-                              className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:border-neon-blue transition-colors"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowPassword(!showPassword)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                            >
-                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                            </button>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-400 mb-2">
-                            Nueva Contraseña
-                          </label>
-                          <input
-                            type={showPassword ? 'text' : 'password'}
-                            value={editForm.newPassword}
-                            onChange={(e) => setEditForm({ ...editForm, newPassword: e.target.value })}
-                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-400 mb-2">
-                            Confirmar Nueva Contraseña
-                          </label>
-                          <input
-                            type={showPassword ? 'text' : 'password'}
-                            value={editForm.confirmPassword}
-                            onChange={(e) => setEditForm({ ...editForm, confirmPassword: e.target.value })}
-                            className="w-full bg-deep-dark border border-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-neon-blue transition-colors"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </motion.div>
             )}
