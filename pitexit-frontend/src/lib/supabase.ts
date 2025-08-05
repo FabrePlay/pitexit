@@ -24,6 +24,7 @@ export interface User {
   plan: string;
   created_at: string;
   updated_at: string;
+  businesses?: string[];
 }
 
 export interface Business {

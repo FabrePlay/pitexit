@@ -636,9 +636,7 @@ export default function AIAgentInterface({
   };
 
   const handleCreateBusiness = (businessData: any) => {
-    if (currentUser && onBusinessChange) {
-      // Agregar el negocio al usuario actual
-      currentUser.businesses.push(businessData.name);
+    if (onBusinessChange) {
       onBusinessChange(businessData.name);
     }
   };
