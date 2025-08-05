@@ -37,6 +37,9 @@ function App() {
     setShowPlayground(true);
   };
 
+  // Debug: Log user state
+  console.log('App state:', { user, userProfile, loading: authLoading, businesses });
+
   // Mostrar Playground
   if (showPlayground && userProfile) {
     return (

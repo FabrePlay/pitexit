@@ -636,9 +636,12 @@ export default function AIAgentInterface({
   };
 
   const handleCreateBusiness = (businessData: any) => {
+    // Solo cambiar el negocio seleccionado después de crearlo
+    // La actualización del perfil se maneja en useBusinesses
     if (onBusinessChange) {
       onBusinessChange(businessData.name);
     }
+    setShowCreateBusiness(false);
   };
 
   const currentResult = businessResults.find(r => r.id === selectedResultId);

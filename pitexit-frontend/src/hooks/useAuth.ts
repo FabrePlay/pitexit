@@ -44,6 +44,11 @@ export function useAuth() {
 
       if (error) {
         console.error('Error fetching user profile:', error);
+        // Si no existe el perfil, crearlo
+        if (error.code === 'PGRST116') {
+          await createUserProfile(authUserId);
+          return;
+        }
       } else {
         setUserProfile(data);
       }
@@ -54,7 +59,45 @@ export function useAuth() {
     }
   };
 
+  const createUserProfile = async (authUserId: string) => {
+    try {
+      const { data: authUser } = await supabase.auth.getUser();
+      if (!authUser.user) return;
+
+      const username = authUser.user.email?.split('@')[0] + Math.floor(Math.random() * 1000);
+      
+      const { data, error } = await supabase
+        .from('users')
+        .insert([{
+          auth_user_id: authUserId,
+          email: authUser.user.email || '',
+          username: username,
+          first_name: '',
+          last_name: '',
+          phone: '',
+          country: 'Chile',
+          city: '',
+          industry: '',
+          experience: 'Principiante',
+          plan: 'Gratis'
+        }])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating user profile:', error);
+      } else {
+        setUserProfile(data);
+      }
+    } catch (error) {
+      console.error('Error creating user profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signUp = async (email: string, password: string, userData: Partial<User>) => {
+    setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -65,10 +108,13 @@ export function useAuth() {
       return { data, error: null };
     } catch (error) {
       return { data: null, error };
+    } finally {
+      setLoading(false);
     }
   };
 
   const signIn = async (email: string, password: string) => {
+    setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -79,6 +125,8 @@ export function useAuth() {
       return { data, error: null };
     } catch (error) {
       return { data: null, error };
+    } finally {
+      setLoading(false);
     }
   };
 

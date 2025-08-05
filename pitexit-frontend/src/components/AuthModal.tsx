@@ -33,6 +33,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     if (isLogin) {
       const { error } = await signIn(formData.email, formData.password);
       if (error) {
+        console.error('Login error:', error);
         setError(error.message || 'Error al iniciar sesión');
       } else {
         onClose();
@@ -48,20 +49,10 @@ export default function AuthModal({ onClose }: AuthModalProps) {
         return;
       }
       
-      // Generar username automático basado en email
-      const autoUsername = formData.email.split('@')[0] + Math.floor(Math.random() * 1000);
-      
-      const { error } = await signUp(formData.email, formData.password, {
-        username: autoUsername,
-        first_name: '',
-        last_name: '',
-        phone: '',
-        city: '',
-        industry: '',
-        experience: 'Principiante',
-      });
+      const { error } = await signUp(formData.email, formData.password, {});
       
       if (error) {
+        console.error('Signup error:', error);
         setError(error.message || 'Error al crear la cuenta');
       } else {
         onClose();
