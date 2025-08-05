@@ -210,9 +210,13 @@ export function useAuth() {
   };
 
   const updateProfile = async (updates: Partial<User>) => {
+    console.log('🔧 useAuth.updateProfile called with:', updates);
+    console.log('👤 Current userProfile in hook:', userProfile);
+    
     if (!userProfile) return { error: new Error('No user profile found') };
 
     try {
+      console.log('📡 Calling Supabase update...');
       const { data, error } = await supabase
         .from('users')
         .update(updates)
@@ -220,10 +224,17 @@ export function useAuth() {
         .select()
         .single();
 
+      console.log('📥 Supabase response:', { data, error });
+      
       if (error) throw error;
+      
+      console.log('🔄 Setting new userProfile state:', data);
       setUserProfile(data);
+      
+      console.log('✅ userProfile state should be updated');
       return { data, error: null };
     } catch (error) {
+      console.error('💥 Error in updateProfile:', error);
       return { data: null, error };
     }
   };

@@ -161,6 +161,10 @@ export default function UserProfile({
   const planInfo = PLAN_FEATURES[user.plan as keyof typeof PLAN_FEATURES];
 
   const handleSaveProfile = async () => {
+    console.log('🔄 Starting profile save process...');
+    console.log('📝 Current editForm data:', editForm);
+    console.log('👤 Current userProfile:', userProfile);
+    
     const updatesToSend = {
       username: editForm.username,
       first_name: editForm.firstName,
@@ -171,23 +175,30 @@ export default function UserProfile({
       experience: editForm.experience,
     };
 
-    console.log('Saving profile updates:', updatesToSend);
+    console.log('📤 Sending updates to database:', updatesToSend);
     
     try {
       const result = await onUpdateUser(updatesToSend);
-      console.log('Update result:', result);
+      console.log('📥 Database update result:', result);
       
       if (result.error) {
         console.error('Error updating profile:', result.error);
-        alert('Error al guardar los cambios: ' + result.error.message);
+        alert('❌ Error al guardar los cambios: ' + result.error.message);
       } else {
-        console.log('Profile updated successfully:', result.data);
-        alert('Perfil actualizado correctamente');
+        console.log('✅ Profile updated successfully in database:', result.data);
+        console.log('🔄 Checking if UI state updated...');
+        
+        // Verificar si el userProfile se actualizó
+        setTimeout(() => {
+          console.log('👤 UserProfile after update:', userProfile);
+        }, 1000);
+        
+        alert('✅ Perfil actualizado correctamente');
         setIsEditing(false);
       }
     } catch (error) {
       console.error('Unexpected error updating profile:', error);
-      alert('Error inesperado al guardar los cambios');
+      alert('❌ Error inesperado al guardar los cambios');
     }
   };
 
