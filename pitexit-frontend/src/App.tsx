@@ -137,13 +137,6 @@ function App() {
               onCreateProject={() => setShowCreateProject(true)}
               onManageMembers={handleManageMembers}
             />
-              className="flex items-center space-x-2 bg-dark-surface/80 backdrop-blur-sm border border-gray-800 rounded-lg px-4 py-2 hover:border-neon-blue transition-colors"
-            >
-              <div className="w-6 h-6 rounded-full bg-neon-blue/10 flex items-center justify-center">
-                <User className="w-4 h-4 text-neon-blue" />
-              </div>
-              <span className="text-sm text-white">{userProfile.username}</span>
-            </button>
           </div>
         </nav>
       )}
