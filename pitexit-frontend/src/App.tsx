@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, Rocket, MessageSquare, Zap, ChevronRight, Check, Users, Sparkles, Crown, BookOpen, Trophy, Lightbulb, User } from 'lucide-react';
+import { Bot, Rocket, MessageSquare, Zap, ChevronRight, Check, Users, Sparkles, Crown, BookOpen, Trophy, Lightbulb, User, Building } from 'lucide-react';
 import AIAgentInterface from './components/AIAgentInterface';
 import UserProfile from './components/UserProfile';
 import AuthModal from './components/AuthModal';
+import ProjectsPage from './components/ProjectsPage';
+import ProjectSelector from './components/ProjectSelector';
+import CreateProjectModal from './components/CreateProjectModal';
+import InviteMemberModal from './components/InviteMemberModal';
 import { useAuth } from './hooks/useAuth';
 import { useBusinesses } from './hooks/useBusinesses';
+import { useProjects } from './hooks/useProjects';
+import { Project } from './lib/supabase';
 
 function App() {
   const { user, userProfile, loading: authLoading, signOut, updateProfile } = useAuth();
   const { businesses } = useBusinesses();
+  const { currentProject } = useProjects();
   const [showAuth, setShowAuth] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showPlayground, setShowPlayground] = useState(false);
+  const [showProjects, setShowProjects] = useState(false);
+  const [showCreateProject, setShowCreateProject] = useState(false);
+  const [showInviteMembers, setShowInviteMembers] = useState(false);
+  const [selectedProjectForInvite, setSelectedProjectForInvite] = useState<Project | null>(null);
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null);
 
   const handlePlaygroundClick = () => {
@@ -35,6 +46,15 @@ function App() {
     setSelectedBusiness(businessName);
     setShowProfile(false);
     setShowPlayground(true);
+  };
+
+  const handleManageMembers = (project: Project) => {
+    setSelectedProjectForInvite(project);
+    setShowInviteMembers(true);
+  };
+
+  const handleProjectsClick = () => {
+    setShowProjects(true);
   };
 
   // Debug: Log user state
@@ -66,11 +86,30 @@ function App() {
     );
   }
 
+  // Mostrar Proyectos
+  if (showProjects) {
+    return <ProjectsPage onClose={() => setShowProjects(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-deep-dark">
       {showAuth && (
         <AuthModal 
           onClose={() => setShowAuth(false)} 
+        />
+      )}
+
+      {showCreateProject && (
+        <CreateProjectModal onClose={() => setShowCreateProject(false)} />
+      )}
+
+      {showInviteMembers && selectedProjectForInvite && (
+        <InviteMemberModal 
+          project={selectedProjectForInvite}
+          onClose={() => {
+            setShowInviteMembers(false);
+            setSelectedProjectForInvite(null);
+          }}
         />
       )}
       
@@ -80,6 +119,24 @@ function App() {
           <div className="flex items-center space-x-4">
             <button
               onClick={handleProfileClick}
+              className="flex items-center space-x-2 bg-dark-surface/80 backdrop-blur-sm border border-gray-800 rounded-lg px-4 py-2 hover:border-neon-blue transition-colors"
+            >
+              <div className="w-6 h-6 rounded-full bg-neon-blue/10 flex items-center justify-center">
+                <User className="w-4 h-4 text-neon-blue" />
+              </div>
+              <span className="text-sm text-white">{userProfile.username}</span>
+            </button>
+            <button
+              onClick={handleProjectsClick}
+              className="flex items-center space-x-2 bg-dark-surface/80 backdrop-blur-sm border border-gray-800 rounded-lg px-4 py-2 hover:border-neon-blue transition-colors"
+            >
+              <Building className="w-4 h-4 text-neon-blue" />
+              <span className="text-sm text-white">Proyectos</span>
+            </button>
+            <ProjectSelector 
+              onCreateProject={() => setShowCreateProject(true)}
+              onManageMembers={handleManageMembers}
+            />
               className="flex items-center space-x-2 bg-dark-surface/80 backdrop-blur-sm border border-gray-800 rounded-lg px-4 py-2 hover:border-neon-blue transition-colors"
             >
               <div className="w-6 h-6 rounded-full bg-neon-blue/10 flex items-center justify-center">

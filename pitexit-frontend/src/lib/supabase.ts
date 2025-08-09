@@ -107,3 +107,20 @@ export interface Task {
   created_at: string;
   updated_at: string;
 }
+
+export interface Project {
+  id: string;
+  name: string;
+  domain?: string;
+  logo_url?: string;
+  created_at: string;
+}
+
+export interface Member {
+  id: string;
+  project_id: string;
+  user_id?: string;
+  role: 'owner' | 'editor' | 'viewer';
+  invited_email?: string;
+  created_at: string;
+}
